@@ -1,6 +1,6 @@
 # JAVA quan ly cafe
 Thành viên:
-- Lê Xuân Tân
+- Lê Xuân Tân(leader)
 - Đỗ Hoài Nam
 - Bùi Trần Tiến Thành
 - Đào Xuân Thành
