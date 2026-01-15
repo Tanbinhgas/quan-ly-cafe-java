@@ -1,16 +1,15 @@
-﻿-- Tạo bảng employees đơn giản
-CREATE TABLE employees (
+﻿CREATE TABLE NhanVien (
     id              INT IDENTITY(1,1) PRIMARY KEY,
-    employee_code   VARCHAR(20) UNIQUE NOT NULL,
-    full_name       NVARCHAR(100) NOT NULL,
-    position        NVARCHAR(50) NOT NULL,
-    base_salary     DECIMAL(12, 2) DEFAULT 0.00,
-    hire_date       DATE NOT NULL,
-    status          VARCHAR(20) NOT NULL DEFAULT 'Đang làm'
+    maNhanVien   VARCHAR(20) UNIQUE NOT NULL,
+    hoTen       NVARCHAR(100) NOT NULL,
+    chucVu        NVARCHAR(50) NOT NULL,
+    luongCoBan     DECIMAL(12, 2) DEFAULT 0.00,
+    ngayVaoLam       DATE NOT NULL,
+    trangThai          VARCHAR(20) NOT NULL DEFAULT 'Đang làm'
 );
 GO
 
-INSERT INTO employees (employee_code, full_name, position, base_salary, hire_date, status)
+INSERT INTO NhanVien(maNhanVien, hoTen, chucVu, luongCoBan, ngayVaoLam, trangThai)
 VALUES 
     ('QL001', N'Nguyễn Văn Quản', N'Quản lý', 15000000.00, '2023-01-01', 'Đang làm'),
     ('PC001', N'Trần Thị Pha', N'Pha chế', 8000000.00, '2023-03-15', 'Đang làm'),
@@ -19,6 +18,5 @@ VALUES
     ('PV002', N'Phạm Thị Vụ', N'Phục vụ', 7000000.00, '2024-01-10', 'Đang làm');
 GO
 
--- Kiểm tra dữ liệu đã insert
-SELECT * FROM employees;
+SELECT * FROM NhanVien;
 GO
