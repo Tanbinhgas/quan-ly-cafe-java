@@ -24,6 +24,7 @@
             "request": "launch",
             "mainClass": "com.quanlycafe.App",
             "vmArgs": "--module-path lib/ --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base",
+            //"classPaths": ["lib/mssql-jdbc-13.2.1.jre11.jar"],
             "args": ""
         }
     ]
