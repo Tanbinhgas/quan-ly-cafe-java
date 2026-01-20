@@ -1,25 +1,35 @@
 package com.quanlycafe;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class App extends Application {  
-    
+public class App extends Application {
+
     @Override
     public void start(Stage primaryStage) {
-        Label label = new Label("Xin chào! Đây là Phần mềm Quản lý Quán Cafe");
+        try {
+            var resource = getClass().getResource("NhanVienView.fxml");
+            System.out.println("Đường dẫn FXML: " + resource);
 
-        StackPane root = new StackPane();
-        root.getChildren().add(label);
+            if (resource == null) {
+                throw new RuntimeException("Không tìm thấy file FXML");
+            }
 
-        Scene scene = new Scene(root, 1600, 900);
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
 
-        primaryStage.setTitle("Quản lý Quán Cafe");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            Scene scene = new Scene(root, 1280, 720);
+            primaryStage.setTitle("Quản lý Quán Cafe");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Lỗi load FXML: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {

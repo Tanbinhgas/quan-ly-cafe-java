@@ -28,7 +28,7 @@ public class NhanVienDAO {
                     rs.getString("hoTen"),
                     rs.getString("chucVu"),
                     rs.getDouble("luongCoBan"),
-                    rs.getString("ngayVaoLam"),  // Nếu cột là DATE, dùng rs.getDate("ngayVaoLam").toString()
+                    rs.getString("ngayVaoLam"),
                     rs.getString("trangThai")
                 );
                 danhSach.add(nv);

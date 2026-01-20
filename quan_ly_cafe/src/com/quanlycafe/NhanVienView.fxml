@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.quanlycafe.controller.NhanVienController">
+
+    <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Label text="Tìm kiếm theo tên/mã:" />
+        <TextField fx:id="txtTimKiem" prefWidth="300.0" />
+    </HBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Button fx:id="btnThem" text="Thêm nhân viên" />
+        <Button fx:id="btnSua" text="Sửa" />
+        <Button fx:id="btnXoa" text="Xóa" />
+    </HBox>
+
+    <TableView fx:id="tblNhanVien" AnchorPane.topAnchor="50.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+        <columns>
+            <TableColumn fx:id="colMaNV" text="Mã NV" prefWidth="80.0" />
+            <TableColumn fx:id="colHoTen" text="Họ tên" prefWidth="200.0" />
+            <TableColumn fx:id="colChucVu" text="Chức vụ" prefWidth="120.0" />
+            <TableColumn fx:id="colLuong" text="Lương cơ bản" prefWidth="120.0" />
+            <TableColumn fx:id="colNgayVaoLam" text="Ngày vào làm" prefWidth="120.0" />
+            <TableColumn fx:id="colTrangThai" text="Trạng thái" prefWidth="120.0" />
+        </columns>
+    </TableView>
+
+</AnchorPane>
