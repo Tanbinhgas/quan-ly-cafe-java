@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="16.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.quanlycafe.controller.NhanVienFormController">
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <Label fx:id="lblTieuDe" text="THÊM NHÂN VIÊN"
+           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+
+    <Separator/>
+
+    <VBox spacing="4">
+        <Label text="Mã nhân viên *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtMaNV" promptText="VD: NV001" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Họ và tên *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtHoTen" promptText="Nguyễn Văn A" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Chức vụ *" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbChucVu" maxWidth="Infinity"
+                  promptText="Chọn chức vụ"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Lương cơ bản (VNĐ) *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtLuong" promptText="VD: 5000000" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Ngày vào làm *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtNgayVaoLam" promptText="DD/MM/YYYY" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Trạng thái" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbTrangThai" maxWidth="Infinity"/>
+    </VBox>
+
+    <Separator/>
+
+    <Label fx:id="lblLoi" text="" style="-fx-text-fill: #c62828; -fx-font-size: 12px;"
+           wrapText="true"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnHuy" text="Hủy" prefWidth="90"
+                style="-fx-background-color: #eeeeee; -fx-cursor: hand;"
+                onAction="#handleHuy"/>
+        <Button fx:id="btnLuu" text="Lưu" prefWidth="90"
+                style="-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"
+                onAction="#handleLuu"/>
+    </HBox>
+</VBox>

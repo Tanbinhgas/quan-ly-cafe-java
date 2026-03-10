@@ -11,7 +11,8 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            var resource = getClass().getResource("NhanVienView.fxml");
+            var resource = getClass().getResource("/com/quanlycafe/NhanVienView.fxml");
+
             System.out.println("Đường dẫn FXML: " + resource);
 
             if (resource == null) {

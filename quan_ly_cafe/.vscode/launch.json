@@ -26,6 +26,18 @@
             "vmArgs": "--module-path lib/ --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base",
             //"classPaths": ["lib/mssql-jdbc-13.2.1.jre11.jar"],
             "args": ""
+        },
+        {
+            "version": "2.0.0",
+            "tasks": [
+                {
+                    "label": "Copy FXML",
+                    "type": "shell",
+                    "command": "New-Item -ItemType Directory -Path 'bin\\com\\quanlycafe' -Force; cp src\\com\\quanlycafe\\*.fxml bin\\com\\quanlycafe\\",
+                    "group": "build",
+                    "presentation": { "reveal": "silent" }
+                }
+            ]
         }
     ]
 }
