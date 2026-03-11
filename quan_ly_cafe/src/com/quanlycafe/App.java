@@ -11,13 +11,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            var resource = getClass().getResource("/com/quanlycafe/NhanVienView.fxml");
-
+            var resource = getClass().getResource("/com/quanlycafe/Dashboard.fxml");
             System.out.println("Đường dẫn FXML: " + resource);
 
-            if (resource == null) {
-                throw new RuntimeException("Không tìm thấy file FXML");
-            }
+            if (resource == null) throw new RuntimeException("Không tìm thấy Dashboard.fxml");
 
             FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
@@ -25,6 +22,8 @@ public class App extends Application {
             Scene scene = new Scene(root, 1280, 720);
             primaryStage.setTitle("Quản lý Quán Cafe");
             primaryStage.setScene(scene);
+            primaryStage.setMinWidth(900);
+            primaryStage.setMinHeight(600);
             primaryStage.show();
 
         } catch (Exception e) {
