@@ -59,7 +59,7 @@
                        style="-fx-font-size:64;"/>
                 <Label text="Chào mừng đến Cafe Manager!"
                        style="-fx-font-size:26; -fx-font-weight:bold; -fx-text-fill:#2c3e50;"/>
-                <Label text="Chọn chức năng từ menu bên trái để bắt đầu."
+                <Label text="Chọn chức năng từ menu bên trên để bắt đầu."
                        style="-fx-font-size:14; -fx-text-fill:#7f8c8d;"/>
 
                 <HBox spacing="20" alignment="CENTER">
