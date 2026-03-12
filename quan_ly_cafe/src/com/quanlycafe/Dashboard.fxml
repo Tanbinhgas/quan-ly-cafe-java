@@ -27,8 +27,8 @@
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
 
-            <Button fx:id="btnMonAn" text="Menu"
-                    onAction="#showMonAn" prefHeight="38"
+            <Button fx:id="btnMenu" text="Menu"
+                    onAction="#showMenu" prefHeight="38"
                     style="-fx-background-color:#9b59b6; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>

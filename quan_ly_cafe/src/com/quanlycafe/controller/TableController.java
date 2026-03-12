@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class TableController {
 
@@ -26,22 +25,16 @@ public class TableController {
 
     private static final Map<String, Long> MENU = new LinkedHashMap<>();
     static {
-        MENU.put("Cà phê đen",        25_000L);
-        MENU.put("Cà phê sữa",        30_000L);
-        MENU.put("Bạc xỉu",           32_000L);
-        MENU.put("Trà sữa trân châu", 45_000L);
-        MENU.put("Matcha latte",      40_000L);
-        MENU.put("Sinh tố xoài",      35_000L);
-        MENU.put("Nước ép cam",       30_000L);
-        MENU.put("Bánh mì thịt",      25_000L);
-        MENU.put("Bánh croissant",    35_000L);
-        MENU.put("Cheesecake",        45_000L);
+        MENU.put("Cà phê phin",       25_000L);
+        MENU.put("Cappuccino",         45_000L);
+        MENU.put("Latte",              45_000L);
+        MENU.put("Matcha Mật Mè",      50_000L);
+        MENU.put("Trà Chanh Giã Tay",  30_000L);
+        MENU.put("Trà Đào Cam Sả",     40_000L);
     }
 
     @FXML
-    public void initialize() {
-        loadBanTuDB();
-    }
+    public void initialize() { loadBanTuDB(); }
 
     private void loadBanTuDB() {
         tableGrid.getChildren().clear();
@@ -50,24 +43,19 @@ public class TableController {
 
         int MAX_COL = 4;
         for (int i = 0; i < MAX_COL; i++) {
-            javafx.scene.layout.ColumnConstraints cc = new javafx.scene.layout.ColumnConstraints();
-            cc.setHgrow(javafx.scene.layout.Priority.ALWAYS);
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setHgrow(Priority.ALWAYS);
             cc.setPercentWidth(100.0 / MAX_COL);
             tableGrid.getColumnConstraints().add(cc);
         }
 
         List<Table> danhSachBan = tableDAO.getAllTables();
+        if (danhSachBan.isEmpty()) { hienBanMacDinh(); return; }
 
-        if (danhSachBan.isEmpty()) {
-            hienBanMacDinh();
-            return;
-        }
-
-        int tongBan = danhSachBan.size();
-        int soHang = (int) Math.ceil((double) tongBan / MAX_COL);
+        int soHang = (int) Math.ceil((double) danhSachBan.size() / MAX_COL);
         for (int i = 0; i < soHang; i++) {
-            javafx.scene.layout.RowConstraints rc = new javafx.scene.layout.RowConstraints();
-            rc.setVgrow(javafx.scene.layout.Priority.ALWAYS);
+            RowConstraints rc = new RowConstraints();
+            rc.setVgrow(Priority.ALWAYS);
             rc.setPercentHeight(100.0 / soHang);
             tableGrid.getRowConstraints().add(rc);
         }
@@ -84,9 +72,8 @@ public class TableController {
         Button btn = new Button(ban.getTableName());
         btn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         btn.setPrefHeight(130);
-        GridPane.setHgrow(btn, javafx.scene.layout.Priority.ALWAYS);
-        GridPane.setVgrow(btn, javafx.scene.layout.Priority.ALWAYS);
-        btn.setUserData(ban);
+        GridPane.setHgrow(btn, Priority.ALWAYS);
+        GridPane.setVgrow(btn, Priority.ALWAYS);
         applyMauTrangThai(btn, ban.getStatus());
         btn.setOnAction(e -> handleChonBan(ban, btn));
         return btn;
@@ -109,45 +96,74 @@ public class TableController {
     private void handleChonBan(Table ban, Button btn) {
         String trangThai = ban.getStatus() == null ? "Trống" : ban.getStatus();
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(ban.getTableName());
-        alert.setHeaderText(ban.getTableName() + "  —  " + trangThai);
-        alert.setContentText("Bạn muốn làm gì?");
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setTitle(ban.getTableName());
+        dialog.setResizable(false);
 
-        ButtonType btnGoiMon   = new ButtonType("Gọi món");
-        ButtonType btnCoKhach  = new ButtonType("Có khách");
-        ButtonType btnDatTruoc = new ButtonType("Đặt trước");
-        ButtonType btnTrong    = new ButtonType("Trống");
-        ButtonType btnHuy      = new ButtonType("Hủy", ButtonType.CANCEL.getButtonData());
+        String mauTT = "Có khách".equals(trangThai) ? "#e74c3c"
+                     : "Đặt trước".equals(trangThai) ? "#f39c12" : "#27ae60";
 
-        alert.getButtonTypes().setAll(btnGoiMon, btnCoKhach, btnDatTruoc, btnTrong, btnHuy);
+        Label lblTen = new Label(ban.getTableName());
+        lblTen.setStyle("-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#2c3e50;");
+        Label lblTT = new Label("Trạng thái: " + trangThai);
+        lblTT.setStyle("-fx-font-size:13; -fx-text-fill:" + mauTT + "; -fx-font-weight:bold;");
 
-        Optional<ButtonType> kq = alert.showAndWait();
-        if (!kq.isPresent()) return;
+        VBox header = new VBox(4, lblTen, lblTT);
+        header.setPadding(new Insets(16, 20, 12, 20));
+        header.setStyle("-fx-background-color:#f8f9fa; -fx-border-color:#dee2e6; -fx-border-width:0 0 1 0;");
 
-        if (kq.get() == btnGoiMon) {
-            if ("Trống".equals(trangThai)) {
+        Button b1 = taoNutHanhDong("🍽  Gọi món",   "#9b59b6", "white");
+        Button b2 = taoNutHanhDong("🔴  Có khách",  "#e74c3c", "white");
+        Button b3 = taoNutHanhDong("📅  Đặt trước", "#f39c12", "white");
+        Button b4 = taoNutHanhDong("✅  Trống",      "#27ae60", "white");
+        Button b5 = taoNutHanhDong("✖  Hủy",        "#ecf0f1", "#555555");
+
+        if ("Có khách".equals(trangThai))  b2.setDisable(true);
+        if ("Đặt trước".equals(trangThai)) b3.setDisable(true);
+        if ("Trống".equals(trangThai))     b4.setDisable(true);
+
+        VBox btnBox = new VBox(8, b1, b2, b3, b4, new Separator(), b5);
+        btnBox.setPadding(new Insets(14, 20, 16, 20));
+
+        b1.setOnAction(e -> {
+            dialog.close();
+            if ("Trống".equals(ban.getStatus())) {
                 if (tableDAO.capNhatTrangThai(ban.getId(), "Có khách")) {
                     ban.setStatus("Có khách");
                     applyMauTrangThai(btn, "Có khách");
                 }
             }
             moPopupChonMon(ban);
+        });
+        b2.setOnAction(e -> { doiTrangThai(ban, btn, "Có khách");  dialog.close(); });
+        b3.setOnAction(e -> { doiTrangThai(ban, btn, "Đặt trước"); dialog.close(); });
+        b4.setOnAction(e -> { doiTrangThai(ban, btn, "Trống");     dialog.close(); });
+        b5.setOnAction(e -> dialog.close());
 
+        VBox root = new VBox(header, btnBox);
+        root.setStyle("-fx-background-color:white;");
+        dialog.setScene(new Scene(root, 260, 310));
+        dialog.show();
+    }
+
+    private Button taoNutHanhDong(String text, String bg, String fg) {
+        Button b = new Button(text);
+        b.setMaxWidth(Double.MAX_VALUE);
+        b.setPrefHeight(38);
+        b.setStyle(
+            "-fx-background-color:" + bg + "; -fx-text-fill:" + fg + ";" +
+            "-fx-font-size:13; -fx-background-radius:8; -fx-cursor:hand; -fx-font-weight:bold;"
+        );
+        return b;
+    }
+
+    private void doiTrangThai(Table ban, Button btn, String trangThaiMoi) {
+        if (tableDAO.capNhatTrangThai(ban.getId(), trangThaiMoi)) {
+            ban.setStatus(trangThaiMoi);
+            applyMauTrangThai(btn, trangThaiMoi);
         } else {
-            String trangThaiMoi = null;
-            if (kq.get() == btnCoKhach)  trangThaiMoi = "Có khách";
-            if (kq.get() == btnDatTruoc) trangThaiMoi = "Đặt trước";
-            if (kq.get() == btnTrong)    trangThaiMoi = "Trống";
-
-            if (trangThaiMoi != null) {
-                if (tableDAO.capNhatTrangThai(ban.getId(), trangThaiMoi)) {
-                    ban.setStatus(trangThaiMoi);
-                    applyMauTrangThai(btn, trangThaiMoi);
-                } else {
-                    showError("Cập nhật trạng thái thất bại!");
-                }
-            }
+            showError("Cập nhật trạng thái thất bại!");
         }
     }
 
@@ -164,8 +180,7 @@ public class TableController {
         lblTieu.setStyle("-fx-text-fill:#2c3e50;");
 
         ListView<String> listGio = new ListView<>();
-        listGio.setPrefHeight(180);
-        listGio.setPrefWidth(260);
+        listGio.setPrefHeight(190);
 
         Label lblTong = new Label("Tổng: 0 ₫");
         lblTong.setFont(Font.font("System Bold", 15));
@@ -179,7 +194,7 @@ public class TableController {
                 long thanh = gia * e.getValue();
                 tong += thanh;
                 listGio.getItems().add(
-                    String.format("%-22s x%d = %,d ₫", e.getKey(), e.getValue(), thanh)
+                    String.format("%s  x%d  =  %,d ₫", e.getKey(), e.getValue(), thanh)
                 );
             }
             lblTong.setText(String.format("Tổng: %,d ₫", tong));
@@ -192,44 +207,40 @@ public class TableController {
 
         int col = 0, row = 0;
         for (Map.Entry<String, Long> mon : MENU.entrySet()) {
-            String ten  = mon.getKey();
-            long   gia  = mon.getValue();
+            String ten = mon.getKey();
+            long   gia = mon.getValue();
 
             Button btnMon = new Button(ten + "\n" + String.format("%,d ₫", gia));
-            btnMon.setPrefSize(148, 62);
+            btnMon.setPrefSize(175, 65);
+            btnMon.setWrapText(true);
             btnMon.setStyle(
-                "-fx-background-color:#ecf0f1; -fx-font-size:11;" +
+                "-fx-background-color:#ecf0f1; -fx-font-size:12;" +
                 "-fx-background-radius:8; -fx-cursor:hand; -fx-text-alignment:center;"
             );
             btnMon.setOnMouseEntered(e -> btnMon.setStyle(
-                "-fx-background-color:#d5d8dc; -fx-font-size:11;" +
+                "-fx-background-color:#d5d8dc; -fx-font-size:12;" +
                 "-fx-background-radius:8; -fx-cursor:hand; -fx-text-alignment:center;"
             ));
             btnMon.setOnMouseExited(e -> btnMon.setStyle(
-                "-fx-background-color:#ecf0f1; -fx-font-size:11;" +
+                "-fx-background-color:#ecf0f1; -fx-font-size:12;" +
                 "-fx-background-radius:8; -fx-cursor:hand; -fx-text-alignment:center;"
             ));
-            btnMon.setOnAction(e -> {
-                gioHang.merge(ten, 1, Integer::sum);
-                refreshGio.run();
-            });
+            btnMon.setOnAction(e -> { gioHang.merge(ten, 1, Integer::sum); refreshGio.run(); });
 
             gridMon.add(btnMon, col, row);
             col++;
             if (col >= 2) { col = 0; row++; }
         }
 
-        Button btnBot1 = new Button("Bớt 1");
-        btnBot1.setPrefWidth(118);
+        Button btnBot1 = new Button("➖  Bớt 1");
+        btnBot1.setMaxWidth(Double.MAX_VALUE);
+        btnBot1.setPrefHeight(34);
         btnBot1.setStyle("-fx-background-color:#e67e22; -fx-text-fill:white;" +
-            "-fx-background-radius:6; -fx-cursor:hand;");
+            "-fx-background-radius:6; -fx-cursor:hand; -fx-font-weight:bold;");
         btnBot1.setOnAction(e -> {
             String chon = listGio.getSelectionModel().getSelectedItem();
             if (chon == null) return;
-            String tenMon = chon.trim().split("  x")[0].trim();
-            if (!gioHang.containsKey(tenMon)) {
-                tenMon = chon.split("x\\d")[0].trim();
-            }
+            String tenMon = chon.split("  x")[0].trim();
             if (gioHang.containsKey(tenMon)) {
                 int sl = gioHang.get(tenMon);
                 if (sl <= 1) gioHang.remove(tenMon);
@@ -238,80 +249,74 @@ public class TableController {
             }
         });
 
-        Button btnXoaTat = new Button("Xóa tất");
-        btnXoaTat.setPrefWidth(118);
+        Button btnXoaTat = new Button("🗑  Xóa tất");
+        btnXoaTat.setMaxWidth(Double.MAX_VALUE);
+        btnXoaTat.setPrefHeight(34);
         btnXoaTat.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white;" +
-            "-fx-background-radius:6; -fx-cursor:hand;");
+            "-fx-background-radius:6; -fx-cursor:hand; -fx-font-weight:bold;");
         btnXoaTat.setOnAction(e -> { gioHang.clear(); refreshGio.run(); });
 
         HBox hboxXoa = new HBox(8, btnBot1, btnXoaTat);
+        HBox.setHgrow(btnBot1, Priority.ALWAYS);
+        HBox.setHgrow(btnXoaTat, Priority.ALWAYS);
 
-        Button btnXacNhan = new Button("Xác nhận đặt món");
-        btnXacNhan.setPrefWidth(255);
+        Button btnXacNhan = new Button("✅  Xác nhận đặt món");
+        btnXacNhan.setMaxWidth(Double.MAX_VALUE);
         btnXacNhan.setPrefHeight(40);
         btnXacNhan.setStyle(
             "-fx-background-color:#27ae60; -fx-text-fill:white;" +
-            "-fx-font-weight:bold; -fx-font-size:14;" +
-            "-fx-background-radius:8; -fx-cursor:hand;"
+            "-fx-font-weight:bold; -fx-font-size:13; -fx-background-radius:8; -fx-cursor:hand;"
         );
         btnXacNhan.setOnAction(e -> {
-            if (gioHang.isEmpty()) {
-                showError("Chưa chọn món nào!");
-                return;
-            }
+            if (gioHang.isEmpty()) { showError("Chưa chọn món nào!"); return; }
             long tong = gioHang.entrySet().stream()
-                .mapToLong(en -> MENU.getOrDefault(en.getKey(), 0L) * en.getValue())
-                .sum();
+                .mapToLong(en -> MENU.getOrDefault(en.getKey(), 0L) * en.getValue()).sum();
 
             StringBuilder sb = new StringBuilder();
-            gioHang.forEach((ten, sl) ->
-                sb.append(String.format("• %-22s x%d\n", ten, sl))
-            );
+            gioHang.forEach((ten, sl) -> sb.append(String.format("• %s  x%d\n", ten, sl)));
             sb.append(String.format("\nTổng cộng: %,d ₫", tong));
 
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Xác nhận đặt món");
             confirm.setHeaderText(ban.getTableName() + " — Đơn hàng:");
             confirm.setContentText(sb.toString());
-
             confirm.showAndWait().ifPresent(res -> {
                 if (res == ButtonType.OK) {
-                    Alert ok = new Alert(Alert.AlertType.INFORMATION);
-                    ok.setTitle("Thành công");
-                    ok.setHeaderText(null);
-                    ok.setContentText("Đã ghi nhận đơn cho " + ban.getTableName() + "!\nTổng: " + String.format("%,d ₫", tong));
-                    ok.showAndWait();
+                    new Alert(Alert.AlertType.INFORMATION,
+                        "Đã ghi nhận đơn cho " + ban.getTableName() +
+                        "!\nTổng: " + String.format("%,d ₫", tong))
+                        .showAndWait();
                     popup.close();
                 }
             });
         });
 
-        Button btnHuy = new Button("Hủy");
-        btnHuy.setPrefWidth(80);
-        btnHuy.setStyle("-fx-background-color:#ecf0f1; -fx-cursor:hand; -fx-background-radius:6;");
-        btnHuy.setOnAction(e -> popup.close());
+        Button btnHuyBo = new Button("✖  Hủy bỏ");
+        btnHuyBo.setPrefHeight(40);
+        btnHuyBo.setPrefWidth(100);
+        btnHuyBo.setStyle("-fx-background-color:#ecf0f1; -fx-cursor:hand;" +
+            "-fx-background-radius:8; -fx-font-size:13;");
+        btnHuyBo.setOnAction(e -> popup.close());
 
-        HBox hboxBtn = new HBox(10, btnXacNhan, btnHuy);
-        hboxBtn.setAlignment(Pos.CENTER_RIGHT);
+        HBox hboxBtn = new HBox(10, btnXacNhan, btnHuyBo);
+        HBox.setHgrow(btnXacNhan, Priority.ALWAYS);
 
-        Label lblGio = new Label("Giỏ hàng");
+        Label lblGio = new Label("🛒  Giỏ hàng");
         lblGio.setFont(Font.font("System Bold", 14));
 
         VBox panelPhai = new VBox(10, lblGio, listGio, hboxXoa,
                                   new Separator(), lblTong, hboxBtn);
-        panelPhai.setPadding(new Insets(10));
-        panelPhai.setPrefWidth(280);
+        panelPhai.setPadding(new Insets(12));
+        panelPhai.setPrefWidth(300);
         panelPhai.setStyle(
-            "-fx-background-color:#fafafa;" +
-            "-fx-border-color:#dddddd;" +
-            "-fx-border-radius:8;" +
-            "-fx-background-radius:8;"
+            "-fx-background-color:#fafafa; -fx-border-color:#dddddd;" +
+            "-fx-border-radius:8; -fx-background-radius:8;"
         );
 
         ScrollPane scroll = new ScrollPane(gridMon);
         scroll.setFitToWidth(true);
-        scroll.setPrefWidth(340);
-        scroll.setPrefHeight(430);
+        scroll.setPrefWidth(390);
+        scroll.setPrefHeight(420);
         scroll.setStyle("-fx-background-color:transparent; -fx-background:transparent;");
 
         HBox body = new HBox(16, scroll, panelPhai);
@@ -321,29 +326,25 @@ public class TableController {
         rootLayout.setPadding(new Insets(16));
         rootLayout.setStyle("-fx-background-color:white;");
 
-        popup.setScene(new Scene(rootLayout, 680, 560));
+        popup.setScene(new Scene(rootLayout, 720, 540));
         popup.show();
     }
 
     private void hienBanMacDinh() {
         int MAX_COL = 4, TONG_BAN = 12;
         int soHang = (int) Math.ceil((double) TONG_BAN / MAX_COL);
-
-        tableGrid.getColumnConstraints().clear();
         for (int i = 0; i < MAX_COL; i++) {
-            javafx.scene.layout.ColumnConstraints cc = new javafx.scene.layout.ColumnConstraints();
-            cc.setHgrow(javafx.scene.layout.Priority.ALWAYS);
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setHgrow(Priority.ALWAYS);
             cc.setPercentWidth(100.0 / MAX_COL);
             tableGrid.getColumnConstraints().add(cc);
         }
-        tableGrid.getRowConstraints().clear();
         for (int i = 0; i < soHang; i++) {
-            javafx.scene.layout.RowConstraints rc = new javafx.scene.layout.RowConstraints();
-            rc.setVgrow(javafx.scene.layout.Priority.ALWAYS);
+            RowConstraints rc = new RowConstraints();
+            rc.setVgrow(Priority.ALWAYS);
             rc.setPercentHeight(100.0 / soHang);
             tableGrid.getRowConstraints().add(rc);
         }
-
         for (int i = 0; i < TONG_BAN; i++) {
             Table banGia = new Table(i + 1, "Bàn " + (i + 1), "Trống");
             tableGrid.add(taoNutBan(banGia), i % MAX_COL, i / MAX_COL);

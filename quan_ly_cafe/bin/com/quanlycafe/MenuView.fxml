@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.quanlycafe.controller.MenuController"
+      style="-fx-background-color:#f4f6f9;">
+
+    <HBox alignment="CENTER_LEFT" spacing="16"
+          style="-fx-background-color:white;
+                 -fx-border-color:#e0e0e0;
+                 -fx-border-width:0 0 1 0;
+                 -fx-padding:16 24 16 24;">
+        <Label text="☕  Menu Đồ Uống"
+               style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#1a2634;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtTimKiem"
+                   promptText="🔍  Tìm món..."
+                   prefWidth="220" prefHeight="36"
+                   style="-fx-background-radius:18; -fx-border-radius:18;
+                          -fx-border-color:#dde1e7; -fx-padding:0 12 0 12;"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color:transparent; -fx-background:transparent;">
+        <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+        <FlowPane fx:id="flowMenu" hgap="20" vgap="20" alignment="TOP_LEFT"/>
+    </ScrollPane>
+
+</VBox>

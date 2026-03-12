@@ -14,7 +14,7 @@ public class TableDAO {
 
     public List<Table> getAllTables() {
         List<Table> list = new ArrayList<>();
-        String sql = "SELECT * FROM tables ORDER BY id";
+        String sql = "SELECT * FROM Ban ORDER BY id";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -35,7 +35,7 @@ public class TableDAO {
     }
 
     public boolean capNhatTrangThai(int id, String status) {
-        String sql = "UPDATE tables SET status = ? WHERE id = ?";
+        String sql = "UPDATE Ban SET status = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,7 +51,7 @@ public class TableDAO {
     }
 
     public boolean themBan(String tableName) {
-        String sql = "INSERT INTO tables (table_name, status) VALUES (?, N'Trống')";
+        String sql = "INSERT INTO Ban (table_name, status) VALUES (?, N'Trống')";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -66,7 +66,7 @@ public class TableDAO {
     }
 
     public boolean xoaBan(int id) {
-        String sql = "DELETE FROM tables WHERE id = ?";
+        String sql = "DELETE FROM Ban WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
