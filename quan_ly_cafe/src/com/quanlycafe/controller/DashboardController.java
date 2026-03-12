@@ -5,6 +5,8 @@ import com.quanlycafe.dao.TableDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -102,10 +104,28 @@ public class DashboardController {
         confirm.setContentText("Bạn có chắc muốn đăng xuất?");
 
         confirm.showAndWait().ifPresent(kq -> {
+
             if (kq == javafx.scene.control.ButtonType.OK) {
+
+                try {
+
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/com/quanlycafe/Login.fxml")
+                );
+
+                Parent root = loader.load();
+
                 Stage stage = (Stage) btnLogout.getScene().getWindow();
-                stage.close();
+
+                stage.setScene(new Scene(root,1280,720));
+                stage.setTitle("Đăng nhập");
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
-    }
+
+        }
+
+    });
+}
 }

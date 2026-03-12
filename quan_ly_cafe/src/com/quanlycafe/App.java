@@ -11,10 +11,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            var resource = getClass().getResource("/com/quanlycafe/Dashboard.fxml");
+            var resource = getClass().getResource("/com/quanlycafe/Login.fxml");
             System.out.println("Đường dẫn FXML: " + resource);
 
-            if (resource == null) throw new RuntimeException("Không tìm thấy Dashboard.fxml");
+            if (resource == null) throw new RuntimeException("Không tìm thấy Login.fxml");
 
             FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
