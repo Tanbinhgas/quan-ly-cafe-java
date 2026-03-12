@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600" prefWidth="960"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.quanlycafe.controller.NguyenLieuController">
+
+    <HBox alignment="CENTER_LEFT" spacing="10"
+          AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+        <Label text="Tìm kiếm:" style="-fx-font-size:13;"/>
+        <TextField fx:id="txtTimKiem" prefWidth="260" promptText="Tên / mã nguyên liệu…"/>
+        <CheckBox fx:id="chkTonThap" text="⚠ Chỉ hiện tồn thấp" onAction="#applyFilter"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnThem" text="➕ Thêm" onAction="#handleThem"
+                style="-fx-background-color:#2ecc71; -fx-text-fill:white; -fx-font-weight:bold;
+                       -fx-background-radius:6; -fx-cursor:hand; -fx-padding:6 14 6 14;"/>
+        <Button fx:id="btnSua" text="✏ Sửa" onAction="#handleSua"
+                style="-fx-background-color:#3498db; -fx-text-fill:white; -fx-font-weight:bold;
+                       -fx-background-radius:6; -fx-cursor:hand; -fx-padding:6 14 6 14;"/>
+        <Button fx:id="btnXoa" text="🗑 Xóa" onAction="#handleXoa"
+                style="-fx-background-color:#e74c3c; -fx-text-fill:white; -fx-font-weight:bold;
+                       -fx-background-radius:6; -fx-cursor:hand; -fx-padding:6 14 6 14;"/>
+    </HBox>
+
+    <TableView fx:id="tblNguyenLieu"
+               AnchorPane.topAnchor="52" AnchorPane.bottomAnchor="10"
+               AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+        <columns>
+            <TableColumn fx:id="colMaNL"        text="Mã NL"             prefWidth="90"/>
+            <TableColumn fx:id="colTenNL"       text="Tên nguyên liệu"   prefWidth="200"/>
+            <TableColumn fx:id="colDonViTinh"   text="ĐVT"               prefWidth="70"/>
+            <TableColumn fx:id="colSoLuongTon"  text="Tồn kho"           prefWidth="100"/>
+            <TableColumn fx:id="colToiThieu"    text="Tối thiểu"         prefWidth="100"/>
+            <TableColumn fx:id="colNgayCapNhat" text="Ngày cập nhật"     prefWidth="120"/>
+            <TableColumn fx:id="colGhiChu"      text="Ghi chú"           prefWidth="220"/>
+        </columns>
+    </TableView>
+</AnchorPane>

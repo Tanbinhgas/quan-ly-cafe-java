@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
@@ -8,100 +7,94 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.quanlycafe.controller.DashboardController"
             prefWidth="1280" prefHeight="720">
-
     <top>
         <HBox alignment="CENTER_LEFT" spacing="12"
               style="-fx-background-color:#1a2634; -fx-padding:12 20 12 20;">
-
             <Label text="CAFE MANAGER"
                    style="-fx-text-fill:#f0c040; -fx-font-size:17; -fx-font-weight:bold;"/>
+            <Separator orientation="VERTICAL" prefHeight="30"
+                       style="-fx-background-color:#3d5166;"/>
 
-            <Separator orientation="VERTICAL"
-                       style="-fx-background-color:#3d5166;" prefHeight="30"/>
-
-            <Button fx:id="btnNhanVien"
-                    text="Quản lý nhân viên"
-                    onAction="#showNhanVien"
-                    prefHeight="38"
+            <Button fx:id="btnNhanVien" text="Quản lý nhân viên"
+                    onAction="#showNhanVien" prefHeight="38"
                     style="-fx-background-color:#2ecc71; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
-                           -fx-background-radius:8; -fx-cursor:hand;
-                           -fx-padding:0 18 0 18;"/>
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
 
-            <Button fx:id="btnBan"
-                    text="Quản lý bàn"
-                    onAction="#showBan"
-                    prefHeight="38"
+            <Button fx:id="btnBan" text="Quản lý bàn"
+                    onAction="#showBan" prefHeight="38"
                     style="-fx-background-color:#3498db; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
-                           -fx-background-radius:8; -fx-cursor:hand;
-                           -fx-padding:0 18 0 18;"/>
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
+
+            <Button fx:id="btnMonAn" text="Menu"
+                    onAction="#showMonAn" prefHeight="38"
+                    style="-fx-background-color:#9b59b6; -fx-text-fill:white;
+                           -fx-font-weight:bold; -fx-font-size:13;
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
+
+            <Button fx:id="btnNguyenLieu" text="Quản lý kho hàng"
+                    onAction="#showNguyenLieu" prefHeight="38"
+                    style="-fx-background-color:#16a085; -fx-text-fill:white;
+                           -fx-font-weight:bold; -fx-font-size:13;
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Button fx:id="btnLogout"
-                    text="Đăng xuất"
-                    onAction="#logout"
-                    prefHeight="38"
+            <Button fx:id="btnLogout" text="Đăng xuất"
+                    onAction="#logout" prefHeight="38"
                     style="-fx-background-color:#e74c3c; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
-                           -fx-background-radius:8; -fx-cursor:hand;
-                           -fx-padding:0 18 0 18;"/>
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
         </HBox>
     </top>
-
     <center>
-        <StackPane fx:id="contentPane"
-                   style="-fx-background-color:#f4f6f9;">
-
+        <StackPane fx:id="contentPane" style="-fx-background-color:#f4f6f9;">
             <VBox fx:id="welcomePane" alignment="CENTER" spacing="16">
-                <Label text="☕"
-                       style="-fx-font-size:64;"/>
+                <Label text="☕" style="-fx-font-size:64;"/>
                 <Label text="Chào mừng đến Cafe Manager!"
                        style="-fx-font-size:26; -fx-font-weight:bold; -fx-text-fill:#2c3e50;"/>
                 <Label text="Chọn chức năng từ menu bên trên để bắt đầu."
                        style="-fx-font-size:14; -fx-text-fill:#7f8c8d;"/>
-
                 <HBox spacing="20" alignment="CENTER">
-                    <VBox alignment="CENTER" spacing="6"
+                    <VBox alignment="CENTER" spacing="6" prefWidth="160"
                           style="-fx-background-color:white; -fx-padding:20;
                                  -fx-background-radius:12;
-                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);"
-                          prefWidth="160">
+                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);">
                         <Label text="👤" style="-fx-font-size:28;"/>
-                        <Label text="Nhân viên"
-                               style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
+                        <Label text="Nhân viên" style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
                         <Label fx:id="lblSoNhanVien" text="..."
                                style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#2ecc71;"/>
                     </VBox>
-
-                    <VBox alignment="CENTER" spacing="6"
+                    <VBox alignment="CENTER" spacing="6" prefWidth="160"
                           style="-fx-background-color:white; -fx-padding:20;
                                  -fx-background-radius:12;
-                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);"
-                          prefWidth="160">
+                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);">
                         <Label text="🪑" style="-fx-font-size:28;"/>
-                        <Label text="Bàn trống"
-                               style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
+                        <Label text="Bàn trống" style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
                         <Label fx:id="lblBanTrong" text="..."
                                style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#3498db;"/>
                     </VBox>
-
-                    <VBox alignment="CENTER" spacing="6"
+                    <VBox alignment="CENTER" spacing="6" prefWidth="160"
                           style="-fx-background-color:white; -fx-padding:20;
                                  -fx-background-radius:12;
-                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);"
-                          prefWidth="160">
+                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);">
                         <Label text="🔴" style="-fx-font-size:28;"/>
-                        <Label text="Bàn có khách"
-                               style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
+                        <Label text="Bàn có khách" style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
                         <Label fx:id="lblBanCoKhach" text="..."
                                style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#e74c3c;"/>
                     </VBox>
+                    <VBox alignment="CENTER" spacing="6" prefWidth="160"
+                          style="-fx-background-color:white; -fx-padding:20;
+                                 -fx-background-radius:12;
+                                 -fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2);">
+                        <Label text="⚠" style="-fx-font-size:28;"/>
+                        <Label text="Kho sắp hết" style="-fx-font-size:13; -fx-text-fill:#7f8c8d;"/>
+                        <Label fx:id="lblKhoTonThap" text="..."
+                               style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#16a085;"/>
+                    </VBox>
                 </HBox>
             </VBox>
-
         </StackPane>
     </center>
-
 </BorderPane>
