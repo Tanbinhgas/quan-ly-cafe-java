@@ -3,31 +3,113 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="0"
-      xmlns="http://javafx.com/javafx/21"
+<HBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.quanlycafe.controller.MenuController"
       style="-fx-background-color:#f4f6f9;">
 
-    <HBox alignment="CENTER_LEFT" spacing="16"
+    <!-- ═══ CỘT TRÁI: DANH SÁCH MÓN ══════════════════════════════════════════ -->
+    <VBox HBox.hgrow="ALWAYS" spacing="0">
+
+        <!-- HEADER -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color:white;
+                     -fx-border-color:#e0e0e0; -fx-border-width:0 0 1 0;
+                     -fx-padding:12 20 12 20;">
+
+            <Button fx:id="btnQuayLai" text="← Quay lại"
+                    onAction="#quayLaiBan"
+                    style="-fx-background-color:#ecf0f1; -fx-text-fill:#555;
+                           -fx-font-size:12; -fx-background-radius:8;
+                           -fx-cursor:hand; -fx-padding:6 12 6 12;"/>
+
+            <Label text="☕  Menu Đồ Uống"
+                   style="-fx-font-size:18; -fx-font-weight:bold; -fx-text-fill:#1a2634;"/>
+
+            <Label fx:id="lblTenBan" text=""
+                   style="-fx-font-size:11; -fx-font-weight:bold; -fx-text-fill:white;
+                          -fx-background-color:#9b59b6;
+                          -fx-padding:3 10 3 10; -fx-background-radius:20;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <TextField fx:id="txtTimKiem" promptText="🔍  Tìm món..."
+                       prefWidth="180" prefHeight="32"
+                       style="-fx-background-radius:16; -fx-border-radius:16;
+                              -fx-border-color:#dde1e7; -fx-padding:0 10 0 10;
+                              -fx-font-size:12;"/>
+        </HBox>
+
+        <!-- LƯỚI MÓN -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background-color:transparent; -fx-background:transparent;">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <FlowPane fx:id="flowMenu" hgap="16" vgap="16" alignment="TOP_LEFT"/>
+        </ScrollPane>
+
+    </VBox>
+
+    <!-- ═══ CỘT PHẢI: GIỎ HÀNG CỐ ĐỊNH ══════════════════════════════════════ -->
+    <VBox prefWidth="280" minWidth="280" maxWidth="280"
+          spacing="10"
           style="-fx-background-color:white;
-                 -fx-border-color:#e0e0e0;
-                 -fx-border-width:0 0 1 0;
-                 -fx-padding:16 24 16 24;">
-        <Label text="☕  Menu Đồ Uống"
-               style="-fx-font-size:22; -fx-font-weight:bold; -fx-text-fill:#1a2634;"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <TextField fx:id="txtTimKiem"
-                   promptText="🔍  Tìm món..."
-                   prefWidth="220" prefHeight="36"
-                   style="-fx-background-radius:18; -fx-border-radius:18;
-                          -fx-border-color:#dde1e7; -fx-padding:0 12 0 12;"/>
-    </HBox>
+                 -fx-border-color:#e0e0e0; -fx-border-width:0 0 0 1;
+                 -fx-padding:16;">
 
-    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                style="-fx-background-color:transparent; -fx-background:transparent;">
-        <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-        <FlowPane fx:id="flowMenu" hgap="20" vgap="20" alignment="TOP_LEFT"/>
-    </ScrollPane>
+        <!-- TIÊU ĐỀ GIỎ HÀNG -->
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <Label text="🛒  Giỏ hàng"
+                   style="-fx-font-size:15; -fx-font-weight:bold; -fx-text-fill:#1a2634;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblTenBanCart" text=""
+                   style="-fx-font-size:10; -fx-text-fill:#9b59b6; -fx-font-weight:bold;"/>
+        </HBox>
 
-</VBox>
+        <!-- UỐNG TẠI CHỖ / MANG VỀ -->
+        <HBox spacing="6">
+            <Button fx:id="btnUongTaiCho" text="🪑 Tại chỗ"
+                    onAction="#chonUongTaiCho"
+                    maxWidth="Infinity" prefHeight="30"
+                    HBox.hgrow="ALWAYS"
+                    style="-fx-background-color:#1a2634; -fx-text-fill:#f0c040;
+                           -fx-font-weight:bold; -fx-background-radius:20;
+                           -fx-cursor:hand; -fx-font-size:11;"/>
+            <Button fx:id="btnMangVe" text="🛍 Mang về"
+                    onAction="#chonMangVe"
+                    maxWidth="Infinity" prefHeight="30"
+                    HBox.hgrow="ALWAYS"
+                    style="-fx-background-color:#ecf0f1; -fx-text-fill:#555;
+                           -fx-font-weight:bold; -fx-background-radius:20;
+                           -fx-cursor:hand; -fx-font-size:11;"/>
+        </HBox>
+
+        <Separator/>
+
+        <!-- DANH SÁCH MÓN TRONG GIỎ -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background-color:transparent; -fx-background:transparent;">
+            <VBox fx:id="cartItems" spacing="6"/>
+        </ScrollPane>
+
+        <Separator/>
+
+        <!-- TỔNG TIỀN -->
+        <Label fx:id="lblTongTien" text="Tổng: 0 ₫"
+               style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#e74c3c;"/>
+
+        <!-- GHI CHÚ -->
+        <TextArea fx:id="txtGhiChu" promptText="📝 Ghi chú..."
+                  prefHeight="60" wrapText="true"
+                  style="-fx-background-radius:6; -fx-border-radius:6;
+                         -fx-border-color:#dddddd; -fx-font-size:11;"/>
+
+        <!-- XÁC NHẬN -->
+        <Button text="💳  Xác nhận đặt món" onAction="#thanhToan"
+                maxWidth="Infinity" prefHeight="38"
+                style="-fx-background-color:#27ae60; -fx-text-fill:white;
+                       -fx-font-weight:bold; -fx-font-size:13;
+                       -fx-background-radius:8; -fx-cursor:hand;"/>
+
+    </VBox>
+
+</HBox>

@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -22,6 +23,7 @@ public class DashboardController {
     @FXML private Button btnBan;
     @FXML private Button btnMenu;
     @FXML private Button btnNguyenLieu;
+    @FXML private Button btnLichSu;
     @FXML private Button btnLogout;
 
     @FXML private Label lblSoNhanVien;
@@ -33,6 +35,7 @@ public class DashboardController {
     private static final String S_BAN        = btn("#3498db");
     private static final String S_MENU       = btn("#9b59b6");
     private static final String S_NGUYENLIEU = btn("#16a085");
+    private static final String S_LICHSU     = btn("#e67e22");
     private static final String S_ACTIVE     =
         "-fx-background-color:#f0c040; -fx-text-fill:#1a2634;" +
         "-fx-font-weight:bold; -fx-font-size:13;" +
@@ -66,15 +69,46 @@ public class DashboardController {
     }
 
     @FXML private void showNhanVien()   { reset(); btnNhanVien.setStyle(S_ACTIVE);   load("/com/quanlycafe/NhanVienView.fxml"); }
-    @FXML private void showBan()        { reset(); btnBan.setStyle(S_ACTIVE);        load("/com/quanlycafe/table.fxml"); }
     @FXML private void showMenu()       { reset(); btnMenu.setStyle(S_ACTIVE);       load("/com/quanlycafe/MenuView.fxml"); }
     @FXML private void showNguyenLieu() { reset(); btnNguyenLieu.setStyle(S_ACTIVE); load("/com/quanlycafe/NguyenLieuView.fxml"); }
+
+    @FXML
+    private void showBan() {
+        reset();
+        btnBan.setStyle(S_ACTIVE);
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/quanlycafe/table.fxml"));
+            Node trang = loader.load();
+            TableController tableCtrl = loader.getController();
+            tableCtrl.setContentPane(contentPane, () -> showBan());
+            contentPane.getChildren().setAll(trang);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Không load được table.fxml").showAndWait();
+        }
+    }
+
+    @FXML
+    private void showLichSu() {
+        reset();
+        btnLichSu.setStyle(S_ACTIVE);
+        try {
+            MenuController mc = new MenuController();
+            mc.xemLichSu();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Không mở được lịch sử!").showAndWait();
+        }
+        reset();
+    }
 
     private void reset() {
         btnNhanVien.setStyle(S_NHANVIEN);
         btnBan.setStyle(S_BAN);
         btnMenu.setStyle(S_MENU);
         btnNguyenLieu.setStyle(S_NGUYENLIEU);
+        btnLichSu.setStyle(S_LICHSU);
     }
 
     private void load(String path) {
@@ -93,7 +127,7 @@ public class DashboardController {
         c.setHeaderText(null);
         c.setContentText("Bạn có chắc muốn đăng xuất?");
         c.showAndWait().ifPresent(bt -> {
-            if (bt == javafx.scene.control.ButtonType.OK)
+            if (bt == ButtonType.OK)
                 ((Stage) btnLogout.getScene().getWindow()).close();
         });
     }

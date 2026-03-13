@@ -14,33 +14,32 @@
                    style="-fx-text-fill:#f0c040; -fx-font-size:17; -fx-font-weight:bold;"/>
             <Separator orientation="VERTICAL" prefHeight="30"
                        style="-fx-background-color:#3d5166;"/>
-
             <Button fx:id="btnNhanVien" text="Quản lý nhân viên"
                     onAction="#showNhanVien" prefHeight="38"
                     style="-fx-background-color:#2ecc71; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
-
             <Button fx:id="btnBan" text="Quản lý bàn"
                     onAction="#showBan" prefHeight="38"
                     style="-fx-background-color:#3498db; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
-
             <Button fx:id="btnMenu" text="Menu"
                     onAction="#showMenu" prefHeight="38"
                     style="-fx-background-color:#9b59b6; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
-
             <Button fx:id="btnNguyenLieu" text="Quản lý kho hàng"
                     onAction="#showNguyenLieu" prefHeight="38"
                     style="-fx-background-color:#16a085; -fx-text-fill:white;
                            -fx-font-weight:bold; -fx-font-size:13;
                            -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
-
+            <Button fx:id="btnLichSu" text="Lịch sử"
+                    onAction="#showLichSu" prefHeight="38"
+                    style="-fx-background-color:#e67e22; -fx-text-fill:white;
+                           -fx-font-weight:bold; -fx-font-size:13;
+                           -fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;"/>
             <Region HBox.hgrow="ALWAYS"/>
-
             <Button fx:id="btnLogout" text="Đăng xuất"
                     onAction="#logout" prefHeight="38"
                     style="-fx-background-color:#e74c3c; -fx-text-fill:white;
