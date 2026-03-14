@@ -1,9 +1,9 @@
 package com.quanlycafe.controller;
 
 import com.quanlycafe.dao.DonHangDAO;
+import com.quanlycafe.dao.NguyenLieuDAO;
 import com.quanlycafe.model.DonHang;
 import com.quanlycafe.model.Table;
-import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -17,7 +17,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -42,7 +41,8 @@ public class MenuController {
     private Runnable  onQuayLai   = null;
     private String    loaiDon     = "Uống tại chỗ";
 
-    private final DonHangDAO donHangDAO = new DonHangDAO();
+    private final DonHangDAO     donHangDAO     = new DonHangDAO();
+    private final NguyenLieuDAO  nguyenLieuDAO  = new NguyenLieuDAO();
 
     private static final String S_ACTIVE =
         "-fx-background-color:#1a2634; -fx-text-fill:#f0c040;" +
@@ -296,13 +296,29 @@ public class MenuController {
             Map<String, Long>    giaMap     = new LinkedHashMap<>();
             gioHang.forEach((m, sl) -> { gioHangMap.put(m.ten, sl); giaMap.put(m.ten, m.gia); });
 
-            boolean saved = donHangDAO.luuDonHang(tenBan, loaiDon, gioHangMap, giaMap, tong, ghiChu);
+            String[] ketQua = donHangDAO.luuDonHang(tenBan, loaiDon, gioHangMap, giaMap, tong, ghiChu);
+            boolean saved = !"ERR".equals(ketQua[0]);
 
-            new Alert(Alert.AlertType.INFORMATION,
-                "✅ Đặt món thành công!\n" + icon + "  " + loaiDon +
-                "  |  📍 " + tenBan + "\nTổng: " + String.format("%,d ₫", tong) +
-                (saved ? "\n\nĐã lưu vào lịch sử." : "\n\n⚠ Không lưu được DB."))
-                .showAndWait();
+            List<String> canhBao = nguyenLieuDAO.truNguyenLieu(gioHangMap);
+
+            StringBuilder msgOk = new StringBuilder();
+            msgOk.append("✅ Đặt món thành công!\n")
+                 .append(icon).append("  ").append(loaiDon)
+                 .append("  |  📍 ").append(tenBan)
+                 .append("\nTổng: ").append(String.format("%,d ₫", tong));
+            if (!saved) msgOk.append("\n\n⚠ Không lưu được lịch sử DB.");
+            if (!canhBao.isEmpty()) {
+                msgOk.append("\n\n📦 Cảnh báo kho hàng sắp hết:");
+                canhBao.forEach(w -> msgOk.append("\n").append(w));
+            }
+
+            Alert okAlert = new Alert(canhBao.isEmpty()
+                ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+            okAlert.setTitle("Thành công");
+            okAlert.setHeaderText(null);
+            okAlert.setContentText(msgOk.toString());
+            okAlert.getDialogPane().setMinWidth(420);
+            okAlert.showAndWait();
 
             gioHang.clear(); txtGhiChu.clear(); renderCart();
             quayLaiBan();
