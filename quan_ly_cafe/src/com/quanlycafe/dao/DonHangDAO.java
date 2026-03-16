@@ -141,7 +141,6 @@ public class DonHangDAO {
         return rows;
     }
 
-    // ── DOANH THU HÔM NAY ─────────────────────────────────────────────────────
     public long getDoanhThuHomNay() {
         String sql = "SELECT ISNULL(SUM(tongTien),0) FROM DonHang " +
                      "WHERE CAST(thoiGian AS DATE) = CAST(GETDATE() AS DATE)";
@@ -153,7 +152,6 @@ public class DonHangDAO {
         return 0;
     }
 
-    // ── DOANH THU THÁNG NÀY ───────────────────────────────────────────────────
     public long getDoanhThuThang() {
         String sql = "SELECT ISNULL(SUM(tongTien),0) FROM DonHang " +
                      "WHERE MONTH(thoiGian) = MONTH(GETDATE()) " +
@@ -166,7 +164,6 @@ public class DonHangDAO {
         return 0;
     }
 
-    // ── LỌC THEO NGÀY ─────────────────────────────────────────────────────────
     public List<DonHang> getDonHangTheoNgay(java.sql.Date ngay) {
         List<DonHang> list = new ArrayList<>();
         String sql = "SELECT * FROM DonHang WHERE CAST(thoiGian AS DATE) = ? ORDER BY thoiGian DESC";
@@ -179,7 +176,6 @@ public class DonHangDAO {
         return list;
     }
 
-    // ── LỌC THEO THÁNG ────────────────────────────────────────────────────────
     public List<DonHang> getDonHangTheoThang(int thang) {
         List<DonHang> list = new ArrayList<>();
         String sql = "SELECT * FROM DonHang WHERE MONTH(thoiGian) = ? " +
@@ -193,7 +189,6 @@ public class DonHangDAO {
         return list;
     }
 
-    // ── LỌC THEO DOANH THU ────────────────────────────────────────────────────
     public List<DonHang> getDonHangTheoDoanhThu(long min, long max) {
         List<DonHang> list = new ArrayList<>();
         String sql = "SELECT * FROM DonHang WHERE tongTien BETWEEN ? AND ? ORDER BY thoiGian DESC";
@@ -207,7 +202,6 @@ public class DonHangDAO {
         return list;
     }
 
-    // ── HELPER MAP ROW ────────────────────────────────────────────────────────
     private DonHang mapRow(ResultSet rs) throws SQLException {
         return new DonHang(
             rs.getInt("id"),

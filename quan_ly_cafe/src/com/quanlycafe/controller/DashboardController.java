@@ -123,12 +123,34 @@ public class DashboardController {
 
     @FXML
     private void logout() {
+
         Alert c = new Alert(Alert.AlertType.CONFIRMATION);
         c.setHeaderText(null);
         c.setContentText("Bạn có chắc muốn đăng xuất?");
+
         c.showAndWait().ifPresent(bt -> {
-            if (bt == ButtonType.OK)
-                ((Stage) btnLogout.getScene().getWindow()).close();
+
+            if (bt == ButtonType.OK) {
+
+                try {
+
+                    FXMLLoader loader = new FXMLLoader(
+                            getClass().getResource("/com/quanlycafe/Login.fxml")
+                    );
+
+                    Node root = loader.load();
+
+                    Stage stage = (Stage) btnLogout.getScene().getWindow();
+
+                    stage.setScene(new javafx.scene.Scene((javafx.scene.Parent) root,1280,720));
+                    stage.setTitle("Login");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         });
     }
 }

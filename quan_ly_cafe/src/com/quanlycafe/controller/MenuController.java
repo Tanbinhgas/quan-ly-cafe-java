@@ -361,7 +361,6 @@ public class MenuController {
                 btnLoc
         );
 
-        // Nút Lọc: ưu tiên khoảng doanh thu > tháng > ngày, có nút Xóa lọc
         Button btnXoaLoc = new Button("✕ Xóa lọc");
         btnXoaLoc.setStyle("-fx-background-color:#ecf0f1; -fx-text-fill:#555;" +
                            "-fx-background-radius:6; -fx-cursor:hand;");
@@ -378,10 +377,8 @@ public class MenuController {
             String sMin = txtMin.getText().trim();
             String sMax = txtMax.getText().trim();
 
-            // Ưu tiên 1: lọc khoảng doanh thu
             if (!sMin.isEmpty() || !sMax.isEmpty()) {
                 try {
-                    // Cho phép để trống một đầu → mặc định 0 hoặc Long.MAX_VALUE
                     long min = sMin.isEmpty() ? 0L : Long.parseLong(sMin.replaceAll("[^0-9]", ""));
                     long max = sMax.isEmpty() ? Long.MAX_VALUE : Long.parseLong(sMax.replaceAll("[^0-9]", ""));
                     if (min > max) {
@@ -395,20 +392,17 @@ public class MenuController {
                 return;
             }
 
-            // Ưu tiên 2: lọc theo tháng
             if (cbThang.getValue() != null) {
                 tv.getItems().setAll(donHangDAO.getDonHangTheoThang(cbThang.getValue()));
                 return;
             }
 
-            // Ưu tiên 3: lọc theo ngày cụ thể
             if (datePicker.getValue() != null) {
                 java.sql.Date ngay = java.sql.Date.valueOf(datePicker.getValue());
                 tv.getItems().setAll(donHangDAO.getDonHangTheoNgay(ngay));
                 return;
             }
 
-            // Không có điều kiện → hiện tất cả
             tv.getItems().setAll(donHangDAO.getAllDonHang());
         });
 
