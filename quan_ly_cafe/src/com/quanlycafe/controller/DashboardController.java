@@ -30,7 +30,12 @@ public class DashboardController {
     @FXML private Label lblBanTrong;
     @FXML private Label lblBanCoKhach;
     @FXML private Label lblKhoTonThap;
+    @FXML private Label lblRoleBadge;   // badge hiển thị vai trò ở navbar
 
+    private String currentRole = "nhanvien";
+    private String currentUser = "";
+
+    // ── STYLES ────────────────────────────────────────────────────────────────
     private static final String S_NHANVIEN   = btn("#2ecc71");
     private static final String S_BAN        = btn("#3498db");
     private static final String S_MENU       = btn("#9b59b6");
@@ -40,6 +45,11 @@ public class DashboardController {
         "-fx-background-color:#f0c040; -fx-text-fill:#1a2634;" +
         "-fx-font-weight:bold; -fx-font-size:13;" +
         "-fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;";
+    private static final String S_DISABLED   =
+        "-fx-background-color:#4a5568; -fx-text-fill:#718096;" +
+        "-fx-font-weight:bold; -fx-font-size:13;" +
+        "-fx-background-radius:8; -fx-padding:0 18 0 18;" +
+        "-fx-cursor:default; -fx-opacity:0.5;";
 
     private static String btn(String color) {
         return "-fx-background-color:" + color + "; -fx-text-fill:white;" +
@@ -47,13 +57,62 @@ public class DashboardController {
                "-fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;";
     }
 
-    @FXML
-    public void initialize() { capNhatThongKe(); }
+    // ── GỌI TỪ LoginController SAU KHI LOAD FXML ─────────────────────────────
+    public void setRole(String role, String username) {
+        this.currentRole = role;
+        this.currentUser = username;
+        apDungPhanQuyen();
+        capNhatThongKe();
+    }
 
+    @FXML
+    public void initialize() {
+        // initialize chạy trước setRole → chưa có role, bỏ qua
+        // Thống kê và phân quyền sẽ chạy trong setRole()
+    }
+
+    // ── PHÂN QUYỀN ────────────────────────────────────────────────────────────
+    private void apDungPhanQuyen() {
+        boolean isAdmin = "admin".equals(currentRole);
+
+        // Badge tên + role ở navbar
+        if (lblRoleBadge != null) {
+            if (isAdmin) {
+                lblRoleBadge.setText("👑 " + currentUser + " (Admin)");
+                lblRoleBadge.setStyle(
+                    "-fx-text-fill:#f0c040; -fx-font-weight:bold;" +
+                    "-fx-font-size:12; -fx-background-color:#2c3e50;" +
+                    "-fx-padding:4 12 4 12; -fx-background-radius:20;");
+            } else {
+                lblRoleBadge.setText("👤 " + currentUser + " (Nhân viên)");
+                lblRoleBadge.setStyle(
+                    "-fx-text-fill:white; -fx-font-size:12;" +
+                    "-fx-background-color:#3d5166;" +
+                    "-fx-padding:4 12 4 12; -fx-background-radius:20;");
+            }
+        }
+
+        if (!isAdmin) {
+            // Nhân viên: ẩn Quản lý nhân viên và Lịch sử
+            btnNhanVien.setVisible(false);
+            btnNhanVien.setManaged(false);
+            btnLichSu.setVisible(false);
+            btnLichSu.setManaged(false);
+        }
+    }
+
+    // ── THỐNG KÊ DASHBOARD ────────────────────────────────────────────────────
     private void capNhatThongKe() {
-        try { lblSoNhanVien.setText(
-            String.valueOf(new NhanVienDAO().getAllNhanVien().size()));
-        } catch (Exception e) { lblSoNhanVien.setText("--"); }
+        boolean isAdmin = "admin".equals(currentRole);
+
+        if (isAdmin) {
+            try { lblSoNhanVien.setText(
+                String.valueOf(new NhanVienDAO().getAllNhanVien().size()));
+            } catch (Exception e) { lblSoNhanVien.setText("--"); }
+        } else {
+            // Nhân viên không thấy số nhân viên
+            lblSoNhanVien.setText("🔒");
+        }
 
         try {
             var ds = new TableDAO().getAllTables();
@@ -61,21 +120,29 @@ public class DashboardController {
                 ds.stream().filter(b -> "Trống".equals(b.getStatus())).count()));
             lblBanCoKhach.setText(String.valueOf(
                 ds.stream().filter(b -> "Có khách".equals(b.getStatus())).count()));
-        } catch (Exception e) { lblBanTrong.setText("--"); lblBanCoKhach.setText("--"); }
+        } catch (Exception e) {
+            lblBanTrong.setText("--"); lblBanCoKhach.setText("--");
+        }
 
         try { lblKhoTonThap.setText(
             String.valueOf(new NguyenLieuDAO().getNguyenLieuTonThap().size()));
         } catch (Exception e) { lblKhoTonThap.setText("--"); }
     }
 
-    @FXML private void showNhanVien()   { reset(); btnNhanVien.setStyle(S_ACTIVE);   load("/com/quanlycafe/NhanVienView.fxml"); }
+    // ── NAVIGATION ────────────────────────────────────────────────────────────
+    @FXML
+    private void showNhanVien() {
+        if (!isAdmin()) return;
+        reset(); btnNhanVien.setStyle(S_ACTIVE);
+        load("/com/quanlycafe/NhanVienView.fxml");
+    }
+
     @FXML private void showMenu()       { reset(); btnMenu.setStyle(S_ACTIVE);       load("/com/quanlycafe/MenuView.fxml"); }
     @FXML private void showNguyenLieu() { reset(); btnNguyenLieu.setStyle(S_ACTIVE); load("/com/quanlycafe/NguyenLieuView.fxml"); }
 
     @FXML
     private void showBan() {
-        reset();
-        btnBan.setStyle(S_ACTIVE);
+        reset(); btnBan.setStyle(S_ACTIVE);
         try {
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/quanlycafe/table.fxml"));
@@ -91,8 +158,8 @@ public class DashboardController {
 
     @FXML
     private void showLichSu() {
-        reset();
-        btnLichSu.setStyle(S_ACTIVE);
+        if (!isAdmin()) return;
+        reset(); btnLichSu.setStyle(S_ACTIVE);
         try {
             MenuController mc = new MenuController();
             mc.xemLichSu();
@@ -103,12 +170,17 @@ public class DashboardController {
         reset();
     }
 
+    // ── HELPERS ───────────────────────────────────────────────────────────────
+    private boolean isAdmin() {
+        return "admin".equals(currentRole);
+    }
+
     private void reset() {
-        btnNhanVien.setStyle(S_NHANVIEN);
+        if (isAdmin()) btnNhanVien.setStyle(S_NHANVIEN);
         btnBan.setStyle(S_BAN);
         btnMenu.setStyle(S_MENU);
         btnNguyenLieu.setStyle(S_NGUYENLIEU);
-        btnLichSu.setStyle(S_LICHSU);
+        if (isAdmin()) btnLichSu.setStyle(S_LICHSU);
     }
 
     private void load(String path) {
@@ -123,34 +195,21 @@ public class DashboardController {
 
     @FXML
     private void logout() {
-
         Alert c = new Alert(Alert.AlertType.CONFIRMATION);
         c.setHeaderText(null);
         c.setContentText("Bạn có chắc muốn đăng xuất?");
-
         c.showAndWait().ifPresent(bt -> {
-
             if (bt == ButtonType.OK) {
-
                 try {
-
                     FXMLLoader loader = new FXMLLoader(
-                            getClass().getResource("/com/quanlycafe/Login.fxml")
-                    );
-
+                        getClass().getResource("/com/quanlycafe/Login.fxml"));
                     Node root = loader.load();
-
                     Stage stage = (Stage) btnLogout.getScene().getWindow();
-
-                    stage.setScene(new javafx.scene.Scene((javafx.scene.Parent) root,1280,720));
-                    stage.setTitle("Login");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                    stage.setScene(new javafx.scene.Scene(
+                        (javafx.scene.Parent) root, 1280, 720));
+                    stage.setTitle("Cafe Manager — Đăng nhập");
+                } catch (Exception e) { e.printStackTrace(); }
             }
-
         });
     }
 }

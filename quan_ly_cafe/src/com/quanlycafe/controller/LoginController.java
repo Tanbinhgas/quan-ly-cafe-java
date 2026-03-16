@@ -9,60 +9,71 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
-    @FXML
-    private TextField txtUser;
+    @FXML private TextField     txtUser;
+    @FXML private PasswordField txtPass;
+    @FXML private Label         lblMessage;
 
-    @FXML
-    private PasswordField txtPass;
-
-    @FXML
-    private Label lblMessage;
+    // Tài khoản được phép đăng nhập
+    // admin    / 123  → toàn quyền
+    // nhanvien / 123  → chỉ: Quản lý bàn, Menu, Kho hàng
+    private static final String[][] ACCOUNTS = {
+        {"admin",    "123", "admin"},
+        {"nhanvien", "123", "nhanvien"},
+    };
 
     @FXML
     private void login() {
-
-        String user = txtUser.getText();
+        String user = txtUser.getText().trim();
         String pass = txtPass.getText();
 
-        if(user.isEmpty() || pass.isEmpty()){
-    lblMessage.setText("Vui lòng nhập tài khoản và mật khẩu");
-    return;
-}
+        if (user.isEmpty() || pass.isEmpty()) {
+            lblMessage.setText("Vui lòng nhập tài khoản và mật khẩu!");
+            return;
+        }
 
-        if(user.equals("admin") && pass.equals("123")){
-
-            try{
-
-                Parent root = FXMLLoader.load(
-                        getClass().getResource("/com/quanlycafe/Dashboard.fxml")
-                );
-
-                Stage stage = (Stage) txtUser.getScene().getWindow();
-
-                stage.setScene(new Scene(root,1280,720));
-                stage.setTitle("Cafe Manager");
-
-            }catch(Exception e){
-                e.printStackTrace();
+        String role = null;
+        for (String[] acc : ACCOUNTS) {
+            if (acc[0].equals(user) && acc[1].equals(pass)) {
+                role = acc[2];
+                break;
             }
+        }
 
-        }else{
-            lblMessage.setText("Sai tài khoản hoặc mật khẩu");
+        if (role == null) {
+            lblMessage.setText("Sai tài khoản hoặc mật khẩu!");
+            lblMessage.setStyle("-fx-text-fill:#e74c3c; -fx-font-size:12;");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/quanlycafe/Dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Truyền role vào DashboardController
+            DashboardController dc = loader.getController();
+            dc.setRole(role, user);
+
+            Stage stage = (Stage) txtUser.getScene().getWindow();
+            stage.setScene(new Scene(root, 1280, 720));
+            stage.setTitle("Cafe Manager — " +
+                ("admin".equals(role) ? "Quản trị viên" : "Nhân viên"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            lblMessage.setText("Lỗi hệ thống: " + e.getMessage());
         }
     }
+
     @FXML
     private void exit() {
-
-    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-    confirm.setTitle("Thoát chương trình");
-    confirm.setHeaderText(null);
-    confirm.setContentText("Bạn có chắc muốn thoát?");
-
-    confirm.showAndWait().ifPresent(rs -> {
-        if(rs == ButtonType.OK){
-            Stage stage = (Stage) txtUser.getScene().getWindow();
-            stage.close();
-        }
-    });
-}
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Thoát chương trình");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Bạn có chắc muốn thoát?");
+        confirm.showAndWait().ifPresent(rs -> {
+            if (rs == ButtonType.OK)
+                ((Stage) txtUser.getScene().getWindow()).close();
+        });
+    }
 }
