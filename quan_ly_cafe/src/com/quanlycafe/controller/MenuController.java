@@ -1,7 +1,6 @@
 package com.quanlycafe.controller;
 
 import com.quanlycafe.dao.DonHangDAO;
-import com.quanlycafe.dao.NguyenLieuDAO;
 import com.quanlycafe.model.DonHang;
 import com.quanlycafe.model.Table;
 import javafx.fxml.FXML;
@@ -41,8 +40,7 @@ public class MenuController {
     private Runnable  onQuayLai   = null;
     private String    loaiDon     = "Uống tại chỗ";
 
-    private final DonHangDAO     donHangDAO     = new DonHangDAO();
-    private final NguyenLieuDAO  nguyenLieuDAO  = new NguyenLieuDAO();
+    private final DonHangDAO donHangDAO = new DonHangDAO();
 
     private static final String S_ACTIVE =
         "-fx-background-color:#1a2634; -fx-text-fill:#f0c040;" +
@@ -296,29 +294,13 @@ public class MenuController {
             Map<String, Long>    giaMap     = new LinkedHashMap<>();
             gioHang.forEach((m, sl) -> { gioHangMap.put(m.ten, sl); giaMap.put(m.ten, m.gia); });
 
-            String[] ketQua = donHangDAO.luuDonHang(tenBan, loaiDon, gioHangMap, giaMap, tong, ghiChu);
-            boolean saved = !"ERR".equals(ketQua[0]);
+            boolean saved = donHangDAO.luuDonHang(tenBan, loaiDon, gioHangMap, giaMap, tong, ghiChu);
 
-            List<String> canhBao = nguyenLieuDAO.truNguyenLieu(gioHangMap);
-
-            StringBuilder msgOk = new StringBuilder();
-            msgOk.append("✅ Đặt món thành công!\n")
-                 .append(icon).append("  ").append(loaiDon)
-                 .append("  |  📍 ").append(tenBan)
-                 .append("\nTổng: ").append(String.format("%,d ₫", tong));
-            if (!saved) msgOk.append("\n\n⚠ Không lưu được lịch sử DB.");
-            if (!canhBao.isEmpty()) {
-                msgOk.append("\n\n📦 Cảnh báo kho hàng sắp hết:");
-                canhBao.forEach(w -> msgOk.append("\n").append(w));
-            }
-
-            Alert okAlert = new Alert(canhBao.isEmpty()
-                ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
-            okAlert.setTitle("Thành công");
-            okAlert.setHeaderText(null);
-            okAlert.setContentText(msgOk.toString());
-            okAlert.getDialogPane().setMinWidth(420);
-            okAlert.showAndWait();
+            new Alert(Alert.AlertType.INFORMATION,
+                "✅ Đặt món thành công!\n" + icon + "  " + loaiDon +
+                "  |  📍 " + tenBan + "\nTổng: " + String.format("%,d ₫", tong) +
+                (saved ? "\n\nĐã lưu vào lịch sử." : "\n\n⚠ Không lưu được DB."))
+                .showAndWait();
 
             gioHang.clear(); txtGhiChu.clear(); renderCart();
             quayLaiBan();
@@ -337,20 +319,98 @@ public class MenuController {
         lblTitle.setStyle("-fx-text-fill:#1a2634;");
 
         long tongDT   = list.stream().mapToLong(DonHang::getTongTien).sum();
+        long doanhThuHomNay = donHangDAO.getDoanhThuHomNay();
+        long doanhThuThang = donHangDAO.getDoanhThuThang();
         long soTC     = list.stream().filter(d -> "Uống tại chỗ".equals(d.getLoaiDon())).count();
         long soMV     = list.stream().filter(d -> "Mang về".equals(d.getLoaiDon())).count();
 
         HBox stats = new HBox(12);
-        stats.getChildren().addAll(
-            statBox("💰 Doanh thu",  String.format("%,d ₫", tongDT), "#27ae60"),
-            statBox("🪑 Tại chỗ",   soTC + " đơn", "#3498db"),
-            statBox("🛍 Mang về",   soMV + " đơn", "#9b59b6"),
-            statBox("📦 Tổng",      list.size() + " đơn", "#e67e22")
+            stats.getChildren().addAll(
+                statBox("💰 Tổng doanh thu", String.format("%,d ₫", tongDT), "#27ae60"),
+                statBox("📅 Hôm nay", String.format("%,d ₫", doanhThuHomNay), "#16a085"),
+                statBox("📆 Tháng này", String.format("%,d ₫", doanhThuThang), "#8e44ad"),
+                statBox("🪑 Tại chỗ", soTC + " đơn", "#3498db"),
+                statBox("🛍 Mang về", soMV + " đơn", "#9b59b6"),
+                statBox("📦 Tổng đơn", list.size() + " đơn", "#e67e22")
         );
         stats.setStyle("-fx-background-color:#f8f9fa; -fx-padding:10; -fx-background-radius:8;");
 
         TableView<DonHang> tv = new TableView<>();
         tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setPromptText("Chọn ngày");
+
+        ComboBox<Integer> cbThang = new ComboBox<>();
+        for(int i=1;i<=12;i++) cbThang.getItems().add(i);
+        cbThang.setPromptText("Chọn tháng");
+
+        Button btnLoc = new Button("🔍 Lọc");
+
+        TextField txtMin = new TextField();
+        txtMin.setPromptText("Doanh thu từ");
+
+        TextField txtMax = new TextField();
+        txtMax.setPromptText("Đến");
+
+        HBox locBox = new HBox(10,
+                new Label("📅 Ngày:"), datePicker,
+                new Label("📆 Tháng:"), cbThang,
+                new Label("💰 Từ:"), txtMin,
+                new Label("Đến:"), txtMax,
+                btnLoc
+        );
+
+        // Nút Lọc: ưu tiên khoảng doanh thu > tháng > ngày, có nút Xóa lọc
+        Button btnXoaLoc = new Button("✕ Xóa lọc");
+        btnXoaLoc.setStyle("-fx-background-color:#ecf0f1; -fx-text-fill:#555;" +
+                           "-fx-background-radius:6; -fx-cursor:hand;");
+        btnXoaLoc.setOnAction(e -> {
+            datePicker.setValue(null);
+            cbThang.setValue(null);
+            txtMin.clear();
+            txtMax.clear();
+            tv.getItems().setAll(donHangDAO.getAllDonHang());
+        });
+        locBox.getChildren().add(btnXoaLoc);
+
+        btnLoc.setOnAction(e -> {
+            String sMin = txtMin.getText().trim();
+            String sMax = txtMax.getText().trim();
+
+            // Ưu tiên 1: lọc khoảng doanh thu
+            if (!sMin.isEmpty() || !sMax.isEmpty()) {
+                try {
+                    // Cho phép để trống một đầu → mặc định 0 hoặc Long.MAX_VALUE
+                    long min = sMin.isEmpty() ? 0L : Long.parseLong(sMin.replaceAll("[^0-9]", ""));
+                    long max = sMax.isEmpty() ? Long.MAX_VALUE : Long.parseLong(sMax.replaceAll("[^0-9]", ""));
+                    if (min > max) {
+                        new Alert(Alert.AlertType.WARNING, "Giá trị 'Từ' phải nhỏ hơn hoặc bằng 'Đến'!").showAndWait();
+                        return;
+                    }
+                    tv.getItems().setAll(donHangDAO.getDonHangTheoDoanhThu(min, max));
+                } catch (NumberFormatException ex) {
+                    new Alert(Alert.AlertType.WARNING, "Vui lòng nhập số hợp lệ cho khoảng doanh thu!").showAndWait();
+                }
+                return;
+            }
+
+            // Ưu tiên 2: lọc theo tháng
+            if (cbThang.getValue() != null) {
+                tv.getItems().setAll(donHangDAO.getDonHangTheoThang(cbThang.getValue()));
+                return;
+            }
+
+            // Ưu tiên 3: lọc theo ngày cụ thể
+            if (datePicker.getValue() != null) {
+                java.sql.Date ngay = java.sql.Date.valueOf(datePicker.getValue());
+                tv.getItems().setAll(donHangDAO.getDonHangTheoNgay(ngay));
+                return;
+            }
+
+            // Không có điều kiện → hiện tất cả
+            tv.getItems().setAll(donHangDAO.getAllDonHang());
+        });
 
         TableColumn<DonHang, String> c1 = new TableColumn<>("⏰ Thời gian");
         c1.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getThoiGian()));
@@ -394,12 +454,14 @@ public class MenuController {
         tv.getItems().addAll(list);
         if (list.isEmpty()) tv.setPlaceholder(new Label("Chưa có đơn hàng nào."));
 
-        VBox root = new VBox(14, lblTitle, stats, tv);
+        VBox root = new VBox(14, lblTitle, stats, locBox, tv);
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color:white;");
         VBox.setVgrow(tv, Priority.ALWAYS);
 
-        stage.setScene(new Scene(root, 820, 500));
+        stage.setScene(new Scene(root, 1100, 700));
+        stage.setResizable(true);
+        stage.centerOnScreen();
         stage.show();
     }
 
