@@ -1,6 +1,7 @@
 package com.quanlycafe.controller;
 
 import com.quanlycafe.dao.DonHangDAO;
+import com.quanlycafe.dao.NguyenLieuDAO;
 import com.quanlycafe.model.DonHang;
 import com.quanlycafe.model.Table;
 import javafx.fxml.FXML;
@@ -40,7 +41,11 @@ public class MenuController {
     private Runnable  onQuayLai   = null;
     private String    loaiDon     = "Uống tại chỗ";
 
-    private final DonHangDAO donHangDAO = new DonHangDAO();
+    private final DonHangDAO    donHangDAO    = new DonHangDAO();
+    private final NguyenLieuDAO nguyenLieuDAO = new NguyenLieuDAO();
+
+    // Cache trạng thái nguyên liệu: tenMon -> đủ nguyên liệu?
+    private Map<String, Boolean> trangThaiNguyenLieu = new java.util.HashMap<>();
 
     private static final String S_ACTIVE =
         "-fx-background-color:#1a2634; -fx-text-fill:#f0c040;" +
@@ -95,6 +100,7 @@ public class MenuController {
         btnQuayLai.setVisible(false); btnQuayLai.setManaged(false);
 
         capNhatStyleLoai();
+        capNhatTrangThaiNguyenLieu();
         renderMon(danhSachMon);
         renderCart();
 
@@ -104,6 +110,12 @@ public class MenuController {
             else renderMon(danhSachMon.stream()
                     .filter(m -> m.ten.toLowerCase().contains(kw)).toList());
         });
+    }
+
+    /** Load lại trạng thái nguyên liệu từ DB cho tất cả món */
+    private void capNhatTrangThaiNguyenLieu() {
+        List<String> tenMonList = danhSachMon.stream().map(m -> m.ten).toList();
+        trangThaiNguyenLieu = nguyenLieuDAO.kiemTraTatCaMon(tenMonList);
     }
 
     @FXML private void chonUongTaiCho() { loaiDon = "Uống tại chỗ"; capNhatStyleLoai(); }
@@ -128,10 +140,25 @@ public class MenuController {
     }
 
     private VBox taoCard(MonUong mon) {
+        boolean duNguyenLieu = trangThaiNguyenLieu.getOrDefault(mon.ten, true);
+
         VBox card = new VBox(0);
         card.setPrefWidth(190);
-        card.setStyle("-fx-background-color:white; -fx-background-radius:12;" +
-                      "-fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2); -fx-cursor:hand;");
+
+        String baseStyle, hoverStyle;
+        if (duNguyenLieu) {
+            baseStyle  = "-fx-background-color:white; -fx-background-radius:12;" +
+                         "-fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2); -fx-cursor:hand;";
+            hoverStyle = "-fx-background-color:white; -fx-background-radius:12;" +
+                         "-fx-effect:dropshadow(gaussian,#aaaaaa,14,0,0,4);" +
+                         "-fx-cursor:hand; -fx-translate-y:-3;";
+        } else {
+            baseStyle  = "-fx-background-color:#e0e0e0; -fx-background-radius:12;" +
+                         "-fx-effect:dropshadow(gaussian,#cccccc,4,0,0,1); -fx-cursor:default;" +
+                         "-fx-opacity:0.5;";
+            hoverStyle = baseStyle; // không có hover effect khi hết nguyên liệu
+        }
+        card.setStyle(baseStyle);
 
         ImageView iv = new ImageView();
         iv.setFitWidth(190); iv.setFitHeight(140); iv.setPreserveRatio(false);
@@ -176,16 +203,25 @@ public class MenuController {
             nlBox.getChildren().add(row);
         }
         content.getChildren().addAll(lblTen, lblMoTa, new Separator(), lblNLTitle, nlBox);
+
+        // Badge "Hết nguyên liệu" khi không đủ
+        if (!duNguyenLieu) {
+            Label badge = new Label("⚠ Hết nguyên liệu");
+            badge.setStyle("-fx-background-color:#e74c3c; -fx-text-fill:white;" +
+                           "-fx-font-size:10; -fx-font-weight:bold;" +
+                           "-fx-padding:3 8 3 8; -fx-background-radius:4;");
+            content.getChildren().add(badge);
+        }
+
         card.getChildren().addAll(imgPane, content);
 
-        String baseStyle = "-fx-background-color:white; -fx-background-radius:12;" +
-                           "-fx-effect:dropshadow(gaussian,#cccccc,8,0,0,2); -fx-cursor:hand;";
-        String hoverStyle = "-fx-background-color:white; -fx-background-radius:12;" +
-                            "-fx-effect:dropshadow(gaussian,#aaaaaa,14,0,0,4);" +
-                            "-fx-cursor:hand; -fx-translate-y:-3;";
-        card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
-        card.setOnMouseExited(e  -> card.setStyle(baseStyle));
-        card.setOnMouseClicked(e -> themVaoGio(mon));
+        final String fBase  = baseStyle;
+        final String fHover = hoverStyle;
+        card.setOnMouseEntered(e -> card.setStyle(fHover));
+        card.setOnMouseExited(e  -> card.setStyle(fBase));
+        if (duNguyenLieu) {
+            card.setOnMouseClicked(e -> themVaoGio(mon));
+        }
         return card;
     }
 
@@ -303,6 +339,12 @@ public class MenuController {
                 .showAndWait();
 
             gioHang.clear(); txtGhiChu.clear(); renderCart();
+            // Refresh trạng thái nguyên liệu sau khi đặt món
+            capNhatTrangThaiNguyenLieu();
+            String kwHienTai = txtTimKiem.getText().trim().toLowerCase();
+            List<MonUong> danhSachHienThi = kwHienTai.isEmpty() ? danhSachMon
+                : danhSachMon.stream().filter(m -> m.ten.toLowerCase().contains(kwHienTai)).toList();
+            renderMon(danhSachHienThi);
             quayLaiBan();
         });
     }

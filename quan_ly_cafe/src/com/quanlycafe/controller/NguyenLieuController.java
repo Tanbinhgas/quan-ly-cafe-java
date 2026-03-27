@@ -89,7 +89,7 @@ public class NguyenLieuController {
         c.setHeaderText(null);
         c.showAndWait().ifPresent(bt -> {
             if (bt == ButtonType.OK) {
-                if (dao.xoa(sel.getId())) taiDuLieu();
+                if (dao.xoa(sel.getMaNguyenLieu())) taiDuLieu();
                 else alert(Alert.AlertType.ERROR, "Xóa thất bại!");
             }
         });

@@ -28,7 +28,7 @@ public class DonHangDAO {
         String sqlDM  = "SELECT maNguyenLieu, dinhMucMoiLy FROM MonNuoc WHERE tenMon = ?";
         String sqlTru = "UPDATE NguyenLieu " +
                         "SET soLuongTon = CASE WHEN soLuongTon - ? < 0 THEN 0 ELSE soLuongTon - ? END, " +
-                        "    ngayCapNhat = CONVERT(NVARCHAR(20), GETDATE(), 103) " +
+                        "    ngayCapNhat = CAST(GETDATE() AS DATE) " +
                         "WHERE maNguyenLieu = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -84,13 +84,17 @@ public class DonHangDAO {
                 try (PreparedStatement ps = conn.prepareStatement(sqlTru)) {
                     for (Map.Entry<String, Double> e : canTru.entrySet()) {
                         double luong = e.getValue();
+                        System.out.println("Trừ kho: " + e.getKey() + " = " + luong);
                         ps.setDouble(1, luong);
                         ps.setDouble(2, luong);
                         ps.setString(3, e.getKey());
                         ps.addBatch();
                     }
-                    ps.executeBatch();
+                    int[] results = ps.executeBatch();
+                    System.out.println("Đã trừ " + results.length + " nguyên liệu.");
                 }
+            } else {
+                System.out.println("canTru rỗng - không tìm thấy định mức trong MonNuoc.");
             }
 
             conn.commit();

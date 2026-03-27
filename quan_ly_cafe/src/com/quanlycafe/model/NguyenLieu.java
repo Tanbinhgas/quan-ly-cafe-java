@@ -1,7 +1,6 @@
 package com.quanlycafe.model;
 
 public class NguyenLieu {
-    private int    id;
     private String maNguyenLieu;
     private String tenNguyenLieu;
     private String donViTinh;
@@ -10,24 +9,8 @@ public class NguyenLieu {
     private String ngayCapNhat;
     private String ghiChu;
 
-    // Constructor rỗng (bắt buộc cho NguyenLieuDAO.map())
     public NguyenLieu() {}
 
-    // Constructor đầy đủ (có id)
-    public NguyenLieu(int id, String maNguyenLieu, String tenNguyenLieu,
-                      String donViTinh, double soLuongTon, double soLuongToiThieu,
-                      String ngayCapNhat, String ghiChu) {
-        this.id = id;
-        this.maNguyenLieu = maNguyenLieu;
-        this.tenNguyenLieu = tenNguyenLieu;
-        this.donViTinh = donViTinh;
-        this.soLuongTon = soLuongTon;
-        this.soLuongToiThieu = soLuongToiThieu;
-        this.ngayCapNhat = ngayCapNhat;
-        this.ghiChu = ghiChu;
-    }
-
-    // Constructor không id (dùng khi thêm mới)
     public NguyenLieu(String maNguyenLieu, String tenNguyenLieu,
                       String donViTinh, double soLuongTon, double soLuongToiThieu,
                       String ngayCapNhat, String ghiChu) {
@@ -39,9 +22,6 @@ public class NguyenLieu {
         this.ngayCapNhat = ngayCapNhat;
         this.ghiChu = ghiChu;
     }
-
-    public int    getId()                      { return id; }
-    public void   setId(int id)                { this.id = id; }
     public String getMaNguyenLieu()            { return maNguyenLieu; }
     public void   setMaNguyenLieu(String v)    { this.maNguyenLieu = v; }
     public String getTenNguyenLieu()           { return tenNguyenLieu; }
