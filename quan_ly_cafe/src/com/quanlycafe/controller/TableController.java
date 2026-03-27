@@ -154,6 +154,7 @@ public class TableController {
         return b;
     }
 
+    // XỬ LÝ SỬA
     private void doiTrangThai(Table ban, Button btn, String trangThaiMoi) {
         if (tableDAO.capNhatTrangThai(ban.getId(), trangThaiMoi)) {
             ban.setStatus(trangThaiMoi);
@@ -163,6 +164,7 @@ public class TableController {
         }
     }
 
+    // GỌI MENU VIEW
     private void goiMonVaoMenuView(Table ban) {
         if (contentPane == null) {
             new Alert(Alert.AlertType.ERROR,

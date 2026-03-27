@@ -39,6 +39,7 @@ public class NhanVienDAO {
         return danhSach;
     }
 
+    // Kiểm tra mã nhân viên đã tồn tại chưa
     public boolean maNhanVienDaTonTai(String maNhanVien) {
         String sql = "SELECT COUNT(*) FROM NhanVien WHERE maNhanVien = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -52,6 +53,7 @@ public class NhanVienDAO {
         return false;
     }
 
+    // Thêm nhân viên mới
     public boolean themNhanVien(NhanVien nv) {
         String sql = "INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, luongCoBan, ngayVaoLam, trangThai) "
                    + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -74,6 +76,7 @@ public class NhanVienDAO {
         }
     }
 
+    // Sửa thông tin nhân viên
     public boolean suaNhanVien(NhanVien nv) {
         String sql = "UPDATE NhanVien SET maNhanVien=?, hoTen=?, chucVu=?, "
                    + "luongCoBan=?, ngayVaoLam=?, trangThai=? WHERE id=?";
@@ -97,6 +100,7 @@ public class NhanVienDAO {
         }
     }
 
+    // Xóa nhân viên
     public boolean xoaNhanVien(int id) {
         String sql = "DELETE FROM NhanVien WHERE id=?";
 

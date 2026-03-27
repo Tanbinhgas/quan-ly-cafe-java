@@ -17,7 +17,7 @@ public class NhanVienFormController {
     @FXML private TextField         txtHoTen;
     @FXML private ComboBox<String>  cmbChucVu;
     @FXML private TextField         txtLuong;
-    @FXML private DatePicker        dpNgayVaoLam;   // ← DatePicker thay TextField
+    @FXML private DatePicker        dpNgayVaoLam;
     @FXML private ComboBox<String>  cmbTrangThai;
     @FXML private Label             lblLoi;
     @FXML private Button            btnLuu;
