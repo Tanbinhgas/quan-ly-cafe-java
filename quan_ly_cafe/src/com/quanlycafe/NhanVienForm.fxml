@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <VBox spacing="16.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -29,8 +28,7 @@
 
     <VBox spacing="4">
         <Label text="Chức vụ *" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="cmbChucVu" maxWidth="Infinity"
-                  promptText="Chọn chức vụ"/>
+        <ComboBox fx:id="cmbChucVu" maxWidth="Infinity" promptText="Chọn chức vụ"/>
     </VBox>
 
     <VBox spacing="4">
@@ -38,9 +36,12 @@
         <TextField fx:id="txtLuong" promptText="VD: 5000000" maxWidth="Infinity"/>
     </VBox>
 
+    <!-- DatePicker thay thế TextField để tránh lỗi định dạng ngày -->
     <VBox spacing="4">
         <Label text="Ngày vào làm *" style="-fx-font-weight: bold;"/>
-        <TextField fx:id="txtNgayVaoLam" promptText="DD/MM/YYYY" maxWidth="Infinity"/>
+        <DatePicker fx:id="dpNgayVaoLam" maxWidth="Infinity"
+                    promptText="Chọn ngày vào làm"
+                    style="-fx-pref-height:32;"/>
     </VBox>
 
     <VBox spacing="4">
@@ -58,7 +59,8 @@
                 style="-fx-background-color: #eeeeee; -fx-cursor: hand;"
                 onAction="#handleHuy"/>
         <Button fx:id="btnLuu" text="Lưu" prefWidth="90"
-                style="-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"
+                style="-fx-background-color: #2e7d32; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-cursor: hand;"
                 onAction="#handleLuu"/>
     </HBox>
 </VBox>

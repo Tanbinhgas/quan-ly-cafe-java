@@ -26,7 +26,7 @@ public class NguyenLieuFormController {
     @FXML
     public void initialize() {
         cboDonViTinh.setItems(FXCollections.observableArrayList(
-            "kg", "lít", "hộp", "gói", "cái", "chai", "túi", "thùng"));
+            "kg", "lít", "hộp", "gói", "hũ", "cái", "chai", "túi", "thùng"));
         cboDonViTinh.setValue("kg");
         txtNgayCapNhat.setText(
             LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
@@ -38,11 +38,16 @@ public class NguyenLieuFormController {
             txtMaNguyenLieu.setText(nl.getMaNguyenLieu());
             txtMaNguyenLieu.setDisable(true);
             txtTenNguyenLieu.setText(nl.getTenNguyenLieu());
-            cboDonViTinh.setValue(nl.getDonViTinh());
+            // setDonViTinh: nếu giá trị không có trong list thì tự thêm vào
+            String dvt = nl.getDonViTinh();
+            if (dvt != null && !cboDonViTinh.getItems().contains(dvt))
+                cboDonViTinh.getItems().add(dvt);
+            cboDonViTinh.setValue(dvt);
             txtSoLuongTon.setText(String.valueOf(nl.getSoLuongTon()));
             txtSoLuongToiThieu.setText(String.valueOf(nl.getSoLuongToiThieu()));
-            txtNgayCapNhat.setText(nl.getNgayCapNhat());
-            txtGhiChu.setText(nl.getGhiChu());
+            // setText an toàn - tránh NPE khi giá trị null từ DB
+            txtNgayCapNhat.setText(nl.getNgayCapNhat() != null ? nl.getNgayCapNhat() : "");
+            txtGhiChu.setText(nl.getGhiChu() != null ? nl.getGhiChu() : "");
         }
     }
 
@@ -62,14 +67,18 @@ public class NguyenLieuFormController {
         } catch (NumberFormatException e) {
             alert(Alert.AlertType.WARNING, "Số lượng phải là số hợp lệ."); return;
         }
+        String donVi = cboDonViTinh.getValue();
+        if (donVi == null || donVi.isBlank()) {
+            alert(Alert.AlertType.WARNING, "Vui lòng chọn đơn vị tính."); return;
+        }
         boolean ok;
         if (nlHienTai == null) {
             if (dao.maDaTonTai(ma)) { alert(Alert.AlertType.WARNING, "Mã đã tồn tại."); return; }
-            ok = dao.them(new NguyenLieu(ma, ten, cboDonViTinh.getValue(),
+            ok = dao.them(new NguyenLieu(ma, ten, donVi,
                 ton, toiThieu, txtNgayCapNhat.getText().trim(), txtGhiChu.getText().trim()));
         } else {
             nlHienTai.setTenNguyenLieu(ten);
-            nlHienTai.setDonViTinh(cboDonViTinh.getValue());
+            nlHienTai.setDonViTinh(donVi);
             nlHienTai.setSoLuongTon(ton);
             nlHienTai.setSoLuongToiThieu(toiThieu);
             nlHienTai.setNgayCapNhat(txtNgayCapNhat.getText().trim());

@@ -67,7 +67,12 @@ public class NguyenLieuDAO {
             ps.setDouble(4, nl.getSoLuongTon());
             ps.setDouble(5, nl.getSoLuongToiThieu());
             ps.setString(6, nl.getNgayCapNhat());
-            ps.setString(7, nl.getGhiChu());
+            // ghiChu có thể NULL
+            String ghiChuThem = nl.getGhiChu();
+            if (ghiChuThem == null || ghiChuThem.isBlank())
+                ps.setNull(7, java.sql.Types.NVARCHAR);
+            else
+                ps.setString(7, ghiChuThem);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { System.err.println("Lỗi them: " + e.getMessage()); return false; }
     }
@@ -82,7 +87,12 @@ public class NguyenLieuDAO {
             ps.setDouble(3, nl.getSoLuongTon());
             ps.setDouble(4, nl.getSoLuongToiThieu());
             ps.setString(5, nl.getNgayCapNhat());
-            ps.setString(6, nl.getGhiChu());
+            // ghiChu có thể NULL
+            String ghiChuSua = nl.getGhiChu();
+            if (ghiChuSua == null || ghiChuSua.isBlank())
+                ps.setNull(6, java.sql.Types.NVARCHAR);
+            else
+                ps.setString(6, ghiChuSua);
             ps.setString(7, nl.getMaNguyenLieu());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { System.err.println("Lỗi sua: " + e.getMessage()); return false; }

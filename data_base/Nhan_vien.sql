@@ -1,11 +1,14 @@
-﻿CREATE TABLE NhanVien (
+﻿USE cafe_manager
+GO
+
+CREATE TABLE NhanVien (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     maNhanVien   VARCHAR(20) UNIQUE NOT NULL,
     hoTen       NVARCHAR(100) NOT NULL,
     chucVu        NVARCHAR(50) NOT NULL,
     luongCoBan     DECIMAL(12, 2) DEFAULT 0.00,
     ngayVaoLam       DATE NOT NULL,
-    trangThai          VARCHAR(20) NOT NULL DEFAULT 'Đang làm'
+    trangThai          NVARCHAR(20) NOT NULL DEFAULT 'Đang làm'
 );
 GO
 
