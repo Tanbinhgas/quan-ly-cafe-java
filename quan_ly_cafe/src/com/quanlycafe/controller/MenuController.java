@@ -307,13 +307,15 @@ public class MenuController {
         }
         long   tong   = gioHang.entrySet().stream()
                             .mapToLong(e -> e.getKey().gia * e.getValue()).sum();
-        String tenBan = (banHienTai != null) ? banHienTai.getTableName() : "Mang về";
+        String tenBan = ("Mang về".equals(loaiDon)) ? "" : 
+                        (banHienTai != null ? banHienTai.getTableName() : "");
         String ghiChu = txtGhiChu.getText().trim();
         String icon   = "Mang về".equals(loaiDon) ? "🛍" : "🪑";
 
         StringBuilder sb = new StringBuilder();
-        sb.append(icon).append("  ").append(loaiDon)
-          .append("   |   📍 ").append(tenBan).append("\n\n");
+        sb.append(icon).append("  ").append(loaiDon);
+        if (!tenBan.isBlank()) sb.append("   |   📍 ").append(tenBan);
+        sb.append("\n\n");
         gioHang.forEach((m, sl) ->
             sb.append(String.format("• %s  x%d  =  %,d ₫\n", m.ten, sl, m.gia * sl)));
         if (!ghiChu.isBlank()) sb.append("\n📝 ").append(ghiChu);
@@ -334,7 +336,8 @@ public class MenuController {
 
             new Alert(Alert.AlertType.INFORMATION,
                 "✅ Đặt món thành công!\n" + icon + "  " + loaiDon +
-                "  |  📍 " + tenBan + "\nTổng: " + String.format("%,d ₫", tong) +
+                (tenBan.isBlank() ? "" : "  |  📍 " + tenBan) +
+                "\nTổng: " + String.format("%,d ₫", tong) +
                 (saved ? "\n\nĐã lưu vào lịch sử." : "\n\n⚠ Không lưu được DB."))
                 .showAndWait();
 
@@ -390,7 +393,7 @@ public class MenuController {
         Button btnLoc = new Button("🔍 Lọc");
 
         TextField txtMin = new TextField();
-        txtMin.setPromptText("Doanh thu từ");
+        txtMin.setPromptText("Giá tiền từ");
 
         TextField txtMax = new TextField();
         txtMax.setPromptText("Đến");
@@ -451,10 +454,6 @@ public class MenuController {
         TableColumn<DonHang, String> c1 = new TableColumn<>("⏰ Thời gian");
         c1.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getThoiGian()));
 
-        TableColumn<DonHang, String> c2 = new TableColumn<>("📍 Bàn");
-        c2.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getTenBan()));
-        c2.setMaxWidth(80);
-
         TableColumn<DonHang, String> c3 = new TableColumn<>("Loại");
         c3.setCellValueFactory(d -> {
             String l = d.getValue().getLoaiDon();
@@ -486,7 +485,7 @@ public class MenuController {
                 super.updateItem(v, empty); setGraphic(empty ? null : btn); }
         });
 
-        tv.getColumns().addAll(c1, c2, c3, c4, c5, c6);
+        tv.getColumns().addAll(c1, c3, c4, c5, c6);
         tv.getItems().addAll(list);
         if (list.isEmpty()) tv.setPlaceholder(new Label("Chưa có đơn hàng nào."));
 
