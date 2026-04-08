@@ -152,11 +152,6 @@ public class NguyenLieuDAO {
         return canhBao;
     }
 
-    /**
-     * Kiểm tra xem một món có đủ nguyên liệu để pha không.
-     * Trả về true nếu tất cả nguyên liệu trong MonNuoc đều đủ (soLuongTon >= dinhMucMoiLy).
-     * Nếu món không có trong MonNuoc thì coi là đủ (true).
-     */
     public boolean isDuNguyenLieu(String tenMon) {
         String sql = "SELECT nl.soLuongTon, mn.dinhMucMoiLy " +
                      "FROM MonNuoc mn " +
@@ -171,16 +166,13 @@ public class NguyenLieuDAO {
                 double dinhMuc = rs.getDouble("dinhMucMoiLy");
                 if (ton < dinhMuc) return false;
             }
-            return true; // không có định mức hoặc tất cả đủ
+            return true;
         } catch (SQLException e) {
             System.err.println("Lỗi isDuNguyenLieu: " + e.getMessage());
             return true;
         }
     }
 
-    /**
-     * Trả về Map<tenMon, isDu> cho tất cả các món trong danh sách.
-     */
     public Map<String, Boolean> kiemTraTatCaMon(List<String> danhSachTenMon) {
         Map<String, Boolean> result = new HashMap<>();
         for (String tenMon : danhSachTenMon) {

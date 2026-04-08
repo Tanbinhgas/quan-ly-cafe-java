@@ -13,9 +13,6 @@ public class LoginController {
     @FXML private PasswordField txtPass;
     @FXML private Label         lblMessage;
 
-    // Tài khoản được phép đăng nhập
-    // admin    / 123  → toàn quyền
-    // nhanvien / 123  → chỉ: Quản lý bàn, Menu, Kho hàng
     private static final String[][] ACCOUNTS = {
         {"admin",    "123", "admin"},
         {"nhanvien", "123", "nhanvien"},
@@ -50,7 +47,6 @@ public class LoginController {
                 getClass().getResource("/com/quanlycafe/Dashboard.fxml"));
             Parent root = loader.load();
 
-            // Truyền role vào DashboardController
             DashboardController dc = loader.getController();
             dc.setRole(role, user);
 

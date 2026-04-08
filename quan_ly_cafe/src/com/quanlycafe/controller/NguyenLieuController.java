@@ -73,7 +73,6 @@ public class NguyenLieuController {
 
     @FXML private void handleThem() { moForm(null); }
 
-    // SỬA
     @FXML
     private void handleSua() {
         NguyenLieu sel = tblNguyenLieu.getSelectionModel().getSelectedItem();
@@ -81,7 +80,6 @@ public class NguyenLieuController {
         moForm(sel);
     }
 
-    // XÓA
     @FXML
     private void handleXoa() {
         NguyenLieu sel = tblNguyenLieu.getSelectionModel().getSelectedItem();
@@ -97,7 +95,6 @@ public class NguyenLieuController {
         });
     }
 
-    // MỞ CỬA SỔ THÊM/SỬA
     private void moForm(NguyenLieu nl) {
         try {
             FXMLLoader loader = new FXMLLoader(

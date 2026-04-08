@@ -25,9 +25,7 @@ public class NhanVienFormController {
     private NhanVien nvDangSua = null;
     private boolean  daLuu     = false;
 
-    // DB dùng DATE → cần format yyyy-MM-dd
     private static final DateTimeFormatter FMT_DB      = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    // Hiển thị cho người dùng dạng dd/MM/yyyy
     private static final DateTimeFormatter FMT_DISPLAY = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML
@@ -40,33 +38,28 @@ public class NhanVienFormController {
         ));
         cmbTrangThai.setValue("Đang làm");
 
-        // Mặc định ngày hôm nay
         dpNgayVaoLam.setValue(LocalDate.now());
 
-        // Chỉ cho nhập số vào ô lương
         txtLuong.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*\\.?\\d*")) txtLuong.setText(oldVal);
         });
     }
 
-    // Gọi từ NhanVienController khi SỬA
     public void setNhanVienDeSua(NhanVien nv) {
         this.nvDangSua = nv;
         lblTieuDe.setText("SỬA NHÂN VIÊN");
         btnLuu.setText("Cập nhật");
 
         txtMaNV.setText(nv.getMaNhanVien());
-        txtMaNV.setEditable(false); // Mã NV không được sửa để tránh trùng lặp khóa chính
+        txtMaNV.setEditable(false);
         txtHoTen.setText(nv.getHoTen());
         cmbChucVu.setValue(nv.getChucVu());
         txtLuong.setText(String.valueOf((long) nv.getLuongCoBan()));
         cmbTrangThai.setValue(nv.getTrangThai());
 
-        // Parse ngày từ DB (yyyy-MM-dd) → DatePicker
         try {
             String ngay = nv.getNgayVaoLam();
             if (ngay != null && !ngay.isBlank()) {
-                // Hỗ trợ cả 2 format: yyyy-MM-dd và dd/MM/yyyy
                 if (ngay.contains("-")) {
                     dpNgayVaoLam.setValue(LocalDate.parse(ngay, FMT_DB));
                 } else {
@@ -88,7 +81,6 @@ public class NhanVienFormController {
         String luongTx = txtLuong.getText().trim();
         String tthai   = cmbTrangThai.getValue();
 
-        // Validate bắt buộc
         if (maNV.isEmpty() || hoTen.isEmpty() || chucVu == null || luongTx.isEmpty()) {
             lblLoi.setText("⚠ Vui lòng điền đầy đủ các trường bắt buộc (*).");
             return;
@@ -98,7 +90,6 @@ public class NhanVienFormController {
             return;
         }
 
-        // Validate lương
         double luong;
         try {
             luong = Double.parseDouble(luongTx);
@@ -108,13 +99,11 @@ public class NhanVienFormController {
             return;
         }
 
-        // Chuyển ngày sang format yyyy-MM-dd cho SQL Server DATE column
         String ngayDB = dpNgayVaoLam.getValue().format(FMT_DB);
 
         NhanVienDAO dao = new NhanVienDAO();
 
         if (nvDangSua == null) {
-            // THÊM MỚI
             if (dao.maNhanVienDaTonTai(maNV)) {
                 lblLoi.setText("⚠ Mã nhân viên \"" + maNV + "\" đã tồn tại.");
                 return;
@@ -127,7 +116,6 @@ public class NhanVienFormController {
                 lblLoi.setText("✖ Thêm thất bại. Kiểm tra lại thông tin.");
             }
         } else {
-            // SỬA
             nvDangSua.setHoTen(hoTen);
             nvDangSua.setChucVu(chucVu);
             nvDangSua.setLuongCoBan(luong);

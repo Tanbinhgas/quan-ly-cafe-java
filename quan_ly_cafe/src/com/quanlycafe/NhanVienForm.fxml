@@ -36,7 +36,6 @@
         <TextField fx:id="txtLuong" promptText="VD: 5000000" maxWidth="Infinity"/>
     </VBox>
 
-    <!-- DatePicker thay thế TextField để tránh lỗi định dạng ngày -->
     <VBox spacing="4">
         <Label text="Ngày vào làm *" style="-fx-font-weight: bold;"/>
         <DatePicker fx:id="dpNgayVaoLam" maxWidth="Infinity"

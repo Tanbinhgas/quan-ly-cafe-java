@@ -105,7 +105,6 @@ public class NhanVienController {
         }
     }
 
-    // XỬ LÝ THÊM
     @FXML
     private void handleThem() {
         boolean daLuu = moCuaSoForm(null);
@@ -115,7 +114,6 @@ public class NhanVienController {
         }
     }
 
-    // XỬ LÝ SỬA
     @FXML
     private void handleSua() {
         NhanVien nvChon = tblNhanVien.getSelectionModel().getSelectedItem();
@@ -128,7 +126,6 @@ public class NhanVienController {
         }
     }
 
-    // XỬ LÝ XÓA
     @FXML
     private void handleXoa() {
         NhanVien nvChon = tblNhanVien.getSelectionModel().getSelectedItem();
@@ -151,7 +148,6 @@ public class NhanVienController {
         }
     }
 
-    // MỞ CỬA SỔ THÊM/SỬA
     private boolean moCuaSoForm(NhanVien nvDeSua) {
         try {
             FXMLLoader loader = new FXMLLoader(

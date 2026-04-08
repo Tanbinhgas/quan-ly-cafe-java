@@ -38,14 +38,12 @@ public class NguyenLieuFormController {
             txtMaNguyenLieu.setText(nl.getMaNguyenLieu());
             txtMaNguyenLieu.setDisable(true);
             txtTenNguyenLieu.setText(nl.getTenNguyenLieu());
-            // setDonViTinh: nếu giá trị không có trong list thì tự thêm vào
             String dvt = nl.getDonViTinh();
             if (dvt != null && !cboDonViTinh.getItems().contains(dvt))
                 cboDonViTinh.getItems().add(dvt);
             cboDonViTinh.setValue(dvt);
             txtSoLuongTon.setText(String.valueOf(nl.getSoLuongTon()));
             txtSoLuongToiThieu.setText(String.valueOf(nl.getSoLuongToiThieu()));
-            // setText an toàn - tránh NPE khi giá trị null từ DB
             txtNgayCapNhat.setText(nl.getNgayCapNhat() != null ? nl.getNgayCapNhat() : "");
             txtGhiChu.setText(nl.getGhiChu() != null ? nl.getGhiChu() : "");
         }

@@ -8,10 +8,8 @@
       fx:controller="com.quanlycafe.controller.MenuController"
       style="-fx-background-color:#f4f6f9;">
 
-    <!-- ═══ CỘT TRÁI: DANH SÁCH MÓN ══════════════════════════════════════════ -->
     <VBox HBox.hgrow="ALWAYS" spacing="0">
 
-        <!-- HEADER -->
         <HBox alignment="CENTER_LEFT" spacing="12"
               style="-fx-background-color:white;
                      -fx-border-color:#e0e0e0; -fx-border-width:0 0 1 0;
@@ -40,7 +38,6 @@
                               -fx-font-size:12;"/>
         </HBox>
 
-        <!-- LƯỚI MÓN -->
         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                     style="-fx-background-color:transparent; -fx-background:transparent;">
             <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
@@ -49,14 +46,12 @@
 
     </VBox>
 
-    <!-- ═══ CỘT PHẢI: GIỎ HÀNG CỐ ĐỊNH ══════════════════════════════════════ -->
     <VBox prefWidth="280" minWidth="280" maxWidth="280"
           spacing="10"
           style="-fx-background-color:white;
                  -fx-border-color:#e0e0e0; -fx-border-width:0 0 0 1;
                  -fx-padding:16;">
 
-        <!-- TIÊU ĐỀ GIỎ HÀNG -->
         <HBox alignment="CENTER_LEFT" spacing="8">
             <Label text="🛒  Giỏ hàng"
                    style="-fx-font-size:15; -fx-font-weight:bold; -fx-text-fill:#1a2634;"/>
@@ -65,7 +60,6 @@
                    style="-fx-font-size:10; -fx-text-fill:#9b59b6; -fx-font-weight:bold;"/>
         </HBox>
 
-        <!-- UỐNG TẠI CHỖ / MANG VỀ -->
         <HBox spacing="6">
             <Button fx:id="btnUongTaiCho" text="🪑 Tại chỗ"
                     onAction="#chonUongTaiCho"
@@ -85,7 +79,6 @@
 
         <Separator/>
 
-        <!-- DANH SÁCH MÓN TRONG GIỎ -->
         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                     style="-fx-background-color:transparent; -fx-background:transparent;">
             <VBox fx:id="cartItems" spacing="6"/>
@@ -93,17 +86,14 @@
 
         <Separator/>
 
-        <!-- TỔNG TIỀN -->
         <Label fx:id="lblTongTien" text="Tổng: 0 ₫"
                style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#e74c3c;"/>
 
-        <!-- GHI CHÚ -->
         <TextArea fx:id="txtGhiChu" promptText="📝 Ghi chú..."
                   prefHeight="60" wrapText="true"
                   style="-fx-background-radius:6; -fx-border-radius:6;
                          -fx-border-color:#dddddd; -fx-font-size:11;"/>
 
-        <!-- XÁC NHẬN -->
         <Button text="💳  Xác nhận đặt món" onAction="#thanhToan"
                 maxWidth="Infinity" prefHeight="38"
                 style="-fx-background-color:#27ae60; -fx-text-fill:white;

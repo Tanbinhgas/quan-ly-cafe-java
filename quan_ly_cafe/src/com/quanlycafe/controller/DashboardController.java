@@ -30,12 +30,11 @@ public class DashboardController {
     @FXML private Label lblBanTrong;
     @FXML private Label lblBanCoKhach;
     @FXML private Label lblKhoTonThap;
-    @FXML private Label lblRoleBadge;   // badge hiển thị vai trò ở navbar
+    @FXML private Label lblRoleBadge;
 
     private String currentRole = "nhanvien";
     private String currentUser = "";
 
-    // ── STYLES ────────────────────────────────────────────────────────────────
     private static final String S_NHANVIEN   = btn("#2ecc71");
     private static final String S_BAN        = btn("#3498db");
     private static final String S_MENU       = btn("#9b59b6");
@@ -57,7 +56,6 @@ public class DashboardController {
                "-fx-background-radius:8; -fx-cursor:hand; -fx-padding:0 18 0 18;";
     }
 
-    // ── GỌI TỪ LoginController SAU KHI LOAD FXML ─────────────────────────────
     public void setRole(String role, String username) {
         this.currentRole = role;
         this.currentUser = username;
@@ -67,15 +65,11 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        // initialize chạy trước setRole → chưa có role, bỏ qua
-        // Thống kê và phân quyền sẽ chạy trong setRole()
     }
 
-    // ── PHÂN QUYỀN ────────────────────────────────────────────────────────────
     private void apDungPhanQuyen() {
         boolean isAdmin = "admin".equals(currentRole);
 
-        // Badge tên + role ở navbar
         if (lblRoleBadge != null) {
             if (isAdmin) {
                 lblRoleBadge.setText("👑 " + currentUser + " (Admin)");
@@ -93,7 +87,6 @@ public class DashboardController {
         }
 
         if (!isAdmin) {
-            // Nhân viên: ẩn Quản lý nhân viên và Lịch sử
             btnNhanVien.setVisible(false);
             btnNhanVien.setManaged(false);
             btnLichSu.setVisible(false);
@@ -101,7 +94,6 @@ public class DashboardController {
         }
     }
 
-    // ── THỐNG KÊ DASHBOARD ────────────────────────────────────────────────────
     private void capNhatThongKe() {
         boolean isAdmin = "admin".equals(currentRole);
 
@@ -110,7 +102,6 @@ public class DashboardController {
                 String.valueOf(new NhanVienDAO().getAllNhanVien().size()));
             } catch (Exception e) { lblSoNhanVien.setText("--"); }
         } else {
-            // Nhân viên không thấy số nhân viên
             lblSoNhanVien.setText("🔒");
         }
 
@@ -129,7 +120,6 @@ public class DashboardController {
         } catch (Exception e) { lblKhoTonThap.setText("--"); }
     }
 
-    // ── NAVIGATION ────────────────────────────────────────────────────────────
     @FXML
     private void showNhanVien() {
         if (!isAdmin()) return;
@@ -170,7 +160,6 @@ public class DashboardController {
         reset();
     }
 
-    // ── HELPERS ───────────────────────────────────────────────────────────────
     private boolean isAdmin() {
         return "admin".equals(currentRole);
     }

@@ -156,7 +156,7 @@ public class MenuController {
             baseStyle  = "-fx-background-color:#e0e0e0; -fx-background-radius:12;" +
                          "-fx-effect:dropshadow(gaussian,#cccccc,4,0,0,1); -fx-cursor:default;" +
                          "-fx-opacity:0.5;";
-            hoverStyle = baseStyle; // không có hover effect khi hết nguyên liệu
+            hoverStyle = baseStyle;
         }
         card.setStyle(baseStyle);
 
