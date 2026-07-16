@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DatabaseConnection",
+            "request": "launch",
+            "mainClass": "com.quanlycafe.util.DatabaseConnection",
+            "projectName": "quan_ly_cafe_8f0a1cae"
+        },
+        {
+            "type": "java",
             "name": "NhanVienDAO",
             "request": "launch",
             "mainClass": "com.quanlycafe.dao.NhanVienDAO",
@@ -24,7 +31,6 @@
             "request": "launch",
             "mainClass": "com.quanlycafe.App",
             "vmArgs": "--module-path lib/ --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base",
-            //"classPaths": ["lib/mssql-jdbc-13.2.1.jre11.jar"],
             "args": ""
         },
         {
@@ -35,7 +41,9 @@
                     "type": "shell",
                     "command": "New-Item -ItemType Directory -Path 'bin\\com\\quanlycafe' -Force; cp src\\com\\quanlycafe\\*.fxml bin\\com\\quanlycafe\\",
                     "group": "build",
-                    "presentation": { "reveal": "silent" }
+                    "presentation": {
+                        "reveal": "silent"
+                    }
                 }
             ]
         }
